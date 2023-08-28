@@ -19,3 +19,9 @@ class Exam(Base):
     course = relationship("Course", back_populates="exams")
     results = relationship("Result", back_populates="exam")
     questions = relationship("Question", back_populates="exam")
+
+    def __init__(self, CourseID, Title, StartTime, Duration):
+        self.CourseID = CourseID
+        self.Title = Title
+        self.StartTime = StartTime
+        self.Duration = Duration

@@ -26,12 +26,12 @@
             <input type="text" required placeholder="First name" value="{{ form_data['FirstName'] }}" name="First name" class="FirstName"><br>
             <input type="text" required placeholder="Last name" value="{{ form_data['LastName'] }}" name="Last name" class="LastName"><br>
             <input type="email" required placeholder="Email Address" value="{{ form_data['Email'] }}" name="Email Address" class="EmailAddress"><br>
-            <input type="text" required placeholder="Username" value="{{ form_data['UserName'] }}" name="UserName" class="password"><br>
+<!--            <input type="text" required placeholder="Username" value="{{ form_data['UserName'] }}" name="UserName" class="password"><br>-->
             <input type="password" required placeholder="Password" name="Password" class="password"><br>
             <input type="password" required placeholder="Repeat Password" name="Repeat_password" class="password"><br>
             <button class="login-btn" type="submit">Sign up</button><br><br>
             <span>Already registered?</span>
-            <a href="" class="signup-link">Sign in</a>
+            <a href="{{ url_for('signin') }}" class="signup-link">Sign in</a>
         </form>
     </div>
 </body>

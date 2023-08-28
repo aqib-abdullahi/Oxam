@@ -16,3 +16,8 @@ class Question(Base):
     """Relationships"""
     exam = relationship("Exam", back_populates="questions")
     answers = relationship("Answer", back_populates="question")
+
+    def __init__(self, ExamID, QuestionText, QuestionType):
+        self.ExamID = ExamID
+        self.QuestionText = QuestionText
+        self.QuestionType = QuestionType

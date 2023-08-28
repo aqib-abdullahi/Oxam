@@ -17,3 +17,9 @@ class Course(Base):
     """Relationships"""
     instructor = relationship("User", back_populates="courses")
     exams = relationship("Exam", back_populates="course")
+
+    def __init__(self, CourseCode, CourseName, Description, InstructorID):
+        self.CourseCode = CourseCode
+        self.CourseName = CourseName
+        self.Description = Description
+        self.InstructorID = InstructorID

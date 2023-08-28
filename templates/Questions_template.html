@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Instructor Dashboard</title>
+    <!-- <link rel="stylesheet" href="style.css"> -->
+
+</head>
+
+<body>
+    <div class="sidebar">
+        <h2>Dashboard</h2>
+        <ul>
+            <li><a href="{{ url_for('create_course_form') }}">Create Course</a></li>
+            <li><a href="{{ url_for('view_courses') }}">View courses</a></li>
+            <li><a href="{{ url_for('create_exam') }}">Create Exam</a></li>
+            <li><a href="{{ url_for('add_question') }}">Questions template</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <h1>Instructor Dashboard</h1>
+
+
+        <!-- Your course and exam listing code here -->
+
+<!--        <a href="{{ url_for('create_course_form') }}" class="add-course">Add course</a>-->
+
+        <h2 id="add-question">Add Question</h2>
+        <form action="{{ url_for('add_question') }}" method="POST" onsubmit="return add_question()">
+
+            <select id="selectExam" name="select-exam" required>
+                <option value="">Select Exam</option>
+                {% for exam in exams %}
+                {% for course in courses%}
+                {% if exam.CourseID == course.CourseID %}
+                <option value="{{ exam.ExamID }}">{{ course.CourseCode }}: {{ course.CourseName }} ({{ exam.Title }})</option>
+                {% endif %}
+                {% endfor %}
+                {% endfor %}
+            </select>
+
+            <input type="hidden" name="ExamID"  id="hidden-input">
+<!--            {% for exam in exams %}-->
+<!--            {% for course in courses%}-->
+<!--            {% if exam.CourseID == course.CourseID %}-->
+<!--            <input type="hidden" name="ExamID" value="{{ exam.ExamID }}" id="hidden-input">-->
+<!--            {% endif %}-->
+<!--            {% endfor %}-->
+<!--            {% endfor %}-->
+
+            <label for="question-text">Question Text:</label>
+            <textarea id="question-text" name="question_text" rows="4" required></textarea>
+
+            <label for="question-type">Question Type:</label>
+            <select id="question-type" name="question_type" required>
+                <option value="TrueFalse">True/False</option>
+                <option value="MultipleChoice">Multiple Choice</option>
+            </select>
+
+            <div id="options-section">
+                <label for="options">Options:</label>
+                <input type="text" name="option_1" required>
+                <input type="text" name="option_2" required>
+                <div id="option-3" style="display: none;" required>
+                    <input type="text" name="option_3">
+                </div>
+                <div id="option-4" style="display: none;" required>
+                    <input type="text" name="option_4">
+                </div>
+                <div id="option-5" style="display: none;" required>
+                    <input type="text" name="option_5">
+                </div>
+                <!-- Add more input fields for options as needed -->
+            </div>
+
+            <div id="correct-answer-section">
+                <label for="correct-answer">Correct Answer:</label>
+                <input type="text" name="correct_answer" required>
+            </div>
+
+            <button type="submit">Add Question</button>
+        </form>
+
+        <!-- ... (remaining content) ... -->
+    </div>
+</body>
+
+<style>
+    /* Your existing CSS styles here */
+
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f1f1f1;
+    }
+
+    .add-course {
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        text-decoration: none;
+        margin-left: 40px;
+    }
+
+    .sidebar h2 {
+        color: #f1f1f1;
+    }
+
+    .sidebar {
+        height: 100%;
+        width: 180px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: #333;
+        padding-top: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: white;
+    }
+
+    .sidebar li a {
+        text-decoration: none;
+        color: whitesmoke;
+    }
+
+    .sidebar ul {
+        padding: 0;
+        text-align: center;
+
+    }
+
+    .sidebar li {
+        list-style: none;
+        margin-top: 10px;
+        margin-bottom: 50px;
+    }
+
+    .content {
+        margin-left: 200px;
+        background-color: white;
+        padding: 20px;
+        margin-top: 20px;
+        margin-right: 20px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+
+
+    }
+
+
+    h1,
+    h2 {
+        color: #333;
+    }
+
+    form {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    input,
+    textarea,
+    select {
+        width: 20rem;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        display: block;
+        border-radius: 5px;
+    }
+
+    button {
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    .course-links a {
+        display: inline-block;
+        margin-right: 10px;
+        color: #333;
+        text-decoration: none;
+        border: 1px solid #ccc;
+        padding: 5px 10px;
+        border-radius: 3px;
+    }
+
+    /* Additional styles for the new section */
+    #add-question {
+        margin-top: 20px;
+        color: #333;
+    }
+
+    form {
+        margin-top: 10px;
+    }
+
+    label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    textarea,
+    select {
+        width: 20rem;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        display: block;
+        border-radius: 5px;
+    }
+
+    button[type="submit"] {
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+</style>
+<script>
+    const selectedQuestionType = document.getElementById("question-type")
+    const option3 = document.getElementById("option-3")
+    const option4 = document.getElementById("option-4")
+    const option5 = document.getElementById("option-5")
+    const hiddenInput = document.getElementById("hidden-input")
+    const selectedValue = document.getElementById("selectExam")
+
+    selectedQuestionType.addEventListener("change", function() {
+        if (selectedQuestionType.value == "MultipleChoice") {
+            option3.removeAttribute("disabled");
+            option4.removeAttribute("disabled");
+            option5.removeAttribute("disabled");
+            option3.style.display = "block";
+            option4.style.display = "block";
+            option5.style.display = "block";
+        } else {
+            option3.setAttribute("disabled", "disabled");
+            option4.setAttribute("disabled", "disabled");
+            option5.setAttribute("disabled", "disabled");
+            option3.style.display = "none";
+            option4.style.display = "none";
+            option5.style.display = "none";
+        }
+    });
+
+    selectedValue.addEventListener("change", function() {
+        const courseID = selectedValue.value
+        hiddenInput.value = courseID
+    });
+
+    const form = document.querySelector("form");
+
+    form.addEventListener("submit", function(event) {
+        const selectedExam = document.getElementById("selectExam").value;
+
+        if (selectedExam === "") {
+            alert("Please select an exam.");
+            event.preventDefault(); // Prevent form submission
+        }
+    });
+
+</script>
+
+</html>
