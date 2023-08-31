@@ -16,7 +16,8 @@ class Course(Base):
 
     """Relationships"""
     instructor = relationship("User", back_populates="courses")
-    exams = relationship("Exam", back_populates="course")
+    exams = relationship("Exam", back_populates="course", cascade="all, delete-orphan")
+    registered_students = relationship("StudentCourse", back_populates="course", cascade="all, delete-orphan")
 
     def __init__(self, CourseCode, CourseName, Description, InstructorID):
         self.CourseCode = CourseCode

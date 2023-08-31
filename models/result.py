@@ -17,3 +17,9 @@ class Result(Base):
     """Relationships"""
     exam = relationship("Exam", back_populates="results")
     user = relationship("User", back_populates="results")
+
+    def __init__(self, ExamID, UserID, score, Timestamp):
+        self.ExamID = ExamID
+        self.UserID = UserID
+        self.score= score
+        self.Timestamp = Timestamp

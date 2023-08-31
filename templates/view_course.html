@@ -3,8 +3,6 @@
 
 <head>
     <title>Instructor Dashboard</title>
-    <!-- <link rel="stylesheet" href="style.css"> -->
-
 </head>
 
 <body>
@@ -15,14 +13,13 @@
             <li><a href="{{ url_for('view_courses') }}">View courses</a></li>
             <li><a href="{{ url_for('create_exam') }}">Create Exam</a></li>
             <li><a href="{{ url_for('add_question') }}">Question Template</a></li>
+            <li><a href="{{ url_for ('register_students_template') }}">Register Student</a></li>
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
         </ul>
     </div>
 
     <div class="content">
         <h1>Instructor Dashboard</h1>
-
-        <!-- ... (your existing content) ... -->
 
         <h2 id="create-course">Courses created</h2>
             <ul class="course-list">
@@ -42,9 +39,7 @@
                         <h6>Exam duration: {{ exam.Duration }}</h6>
 
                         <div class="course-links">
-<!--                            <a href="/dashboard/create_exam/{{ course.CourseID }}">Add a new Exam</a>-->
                             <a href="/dashboard/view-courses/delete_exam/{{ exam.ExamID }}" onclick="return confirm('Are you sure you want to delete this exam?')">Delete Exam</a>
-                            <!-- Add more links here if needed -->
                         </div>
                         {% endif %}
 
@@ -53,9 +48,7 @@
                         {% endif %}
                         <div class="course-links">
                             <a href="/dashboard/create_exam/{{ course.CourseID }}">Add a new Exam</a>
-                            <a href="/dashboard/view-courses/delete_course/{{ course.CourseID }}" onclick="return confirm('Are you sure you want to delete this exam? This will also delete all exams associated with this course.')">Delete Course</a>
-
-                            <!-- Add more links here if needed -->
+                            <a href="/dashboard/view-courses/delete_course/{{ course.CourseID }}" onclick="return confirm('Are you sure you want to delete this COURSE? This will also delete all exams associated with this course.')">Delete Course</a>
                         </div>
 
                     </li>
@@ -63,26 +56,6 @@
             </ul>
 
         <a href="{{ url_for('create_course_form') }}" class="add-course">Add course</a>
-<!--        <div class="create-section">-->
-<!--            <form action="{{ url_for('create_course_form') }}" method="POST">-->
-<!--                <label for="course-code">Course Code:</label>-->
-<!--                <input type="text" id="course-code" name="course_code" required>-->
-
-<!--                <label for="course-name">Course Name:</label>-->
-<!--                <input type="text" id="course-name" name="course_name" required>-->
-
-<!--                &lt;!&ndash; <label for="instructor-id">Instructor ID:</label>-->
-<!--                <input type="number" id="instructor-id" name="instructor_id" required> &ndash;&gt;-->
-
-<!--                <label for="course-description">Description:</label>-->
-<!--                <textarea id="course-description" name="course_description" rows="4" required></textarea>-->
-
-<!--                <button type="submit">Create Course</button>-->
-<!--            </form>-->
-<!--        </div>-->
-
-
-        <!-- ... (remaining content) ... -->
     </div>
 </body>
 <style>

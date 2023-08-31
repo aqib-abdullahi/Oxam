@@ -22,53 +22,29 @@
 
     <div class="content">
         <h1>Instructor Dashboard</h1>
+        <h2 id="Register-student">Register Student</h2>
+        <form id="register-form" action="" method="POST">
+            <div>{{ error }}</div><br>
+            <label for="search-email">Search Student by Email:</label>
+            <input type="email" id="search-email" name="search_email" required>
+            <button type="button" id="search-button">Search</button><br><br>
 
-        <h2 id="add-question">Add Question</h2>
-        <form action="{{ url_for('add_question') }}" method="POST" onsubmit="return add_question()">
-
-            <select id="selectExam" name="select-exam" required>
-                <option value="">Select Exam</option>
-                {% for exam in exams %}
-                {% for course in courses%}
-                {% if exam.CourseID == course.CourseID %}
-                <option value="{{ exam.ExamID }}">{{ course.CourseCode }}: {{ course.CourseName }} ({{ exam.Title }})</option>
-                {% endif %}
-                {% endfor %}
-                {% endfor %}
+            <label for="student-select">Selected Student:</label>
+            <select id="student-select" name="student_id" required>
             </select>
 
-            <input type="hidden" name="ExamID"  id="hidden-input">
+            <label for="course-select">Select Course:</label>
+            <select id="course-select" name="course_id" required>
+                <!-- Options for courses will be populated dynamically -->
+                <option value="">select a course</option>
+                {% for course in courses %}
+                <option value="{{ course.CourseID }}">{{ course.CourseCode }}: {{ course.CourseName }}</option>
+                {% endfor %}
+            </select><br>
+            <input type="hidden" id="selected-student" name="selected-student" value="">
+            <input type="hidden" id="selected-course" name="selected-course" value="">
 
-            <label for="question-text">Question Text:</label>
-            <textarea id="question-text" name="question_text" rows="4" required></textarea>
-
-            <label for="question-type">Question Type:</label>
-            <select id="question-type" name="question_type" required>
-                <option value="TrueFalse">True/False</option>
-                <option value="MultipleChoice">Multiple Choice</option>
-            </select>
-
-            <div id="options-section">
-                <label for="options">Options:</label>
-                <input type="text" name="option_1" required>
-                <input type="text" name="option_2" required>
-                <div id="option-3" style="display: none;" required>
-                    <input type="text" name="option_3">
-                </div>
-                <div id="option-4" style="display: none;" required>
-                    <input type="text" name="option_4">
-                </div>
-                <div id="option-5" style="display: none;" required>
-                    <input type="text" name="option_5">
-                </div>
-            </div>
-
-            <div id="correct-answer-section">
-                <label for="correct-answer">Correct Answer:</label>
-                <input type="text" name="correct_answer" required>
-            </div>
-
-            <button type="submit">Add Question</button>
+            <button type="submit">Register Student</button>
         </form>
 
     </div>
@@ -137,8 +113,6 @@
         margin-bottom: 20px;
         border-radius: 10px;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-
-
     }
 
 
@@ -232,45 +206,40 @@
     }
 </style>
 <script>
-    const selectedQuestionType = document.getElementById("question-type")
-    const option3 = document.getElementById("option-3")
-    const option4 = document.getElementById("option-4")
-    const option5 = document.getElementById("option-5")
-    const hiddenInput = document.getElementById("hidden-input")
-    const selectedValue = document.getElementById("selectExam")
+    const searchEmailInput = document.getElementById("search-email");
+    const searchButton = document.getElementById("search-button");
+    const studentSelect = document.getElementById("student-select");
+    const courseSelect = document.getElementById("course-select");
+    const registerForm = document.getElementById("register-form");
 
-    selectedQuestionType.addEventListener("change", function() {
-        if (selectedQuestionType.value == "MultipleChoice") {
-            option3.removeAttribute("disabled");
-            option4.removeAttribute("disabled");
-            option5.removeAttribute("disabled");
-            option3.style.display = "block";
-            option4.style.display = "block";
-            option5.style.display = "block";
-        } else {
-            option3.setAttribute("disabled", "disabled");
-            option4.setAttribute("disabled", "disabled");
-            option5.setAttribute("disabled", "disabled");
-            option3.style.display = "none";
-            option4.style.display = "none";
-            option5.style.display = "none";
+
+
+    // Handle student search
+    searchButton.addEventListener("click", async () => {
+        const searchEmail = searchEmailInput.value;
+        if (!searchEmail) {
+            return;
+        }
+
+        const response = await fetch(`/dashboard/search_students_by_email?email=${searchEmail}`);
+        const students = await response.json();
+
+        studentSelect.innerHTML = ""; // Clear previous options
+
+        for (const student of students) {
+            const option = document.createElement("option");
+            option.value = student.id;
+            option.textContent = `${student.FirstName} ${student.LastName} (${student.Email})`;
+            studentSelect.appendChild(option);
         }
     });
 
-    selectedValue.addEventListener("change", function() {
-        const courseID = selectedValue.value
-        hiddenInput.value = courseID
+    studentSelect.addEventListener("change", function() {
+        selectedStudentInput.value = studentSelect.value;
     });
 
-    const form = document.querySelector("form");
-
-    form.addEventListener("submit", function(event) {
-        const selectedExam = document.getElementById("selectExam").value;
-
-        if (selectedExam === "") {
-            alert("Please select an exam.");
-            event.preventDefault(); // Prevent form submission
-        }
+    courseSelect.addEventListener("change", function() {
+        selectedCourseInput.value = courseSelect.value;
     });
 
 </script>

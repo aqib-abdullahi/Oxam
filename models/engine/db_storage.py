@@ -9,6 +9,8 @@ from models.exam import Exam
 from models.question import Question
 from models.result import Result
 from models.user import User
+from models.student_course import StudentCourse
+from models.responses import QuestionResponse
 from dotenv import load_dotenv
 from sqlalchemy.orm import sessionmaker, scoped_session
 import os

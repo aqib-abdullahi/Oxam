@@ -15,7 +15,8 @@ class Question(Base):
 
     """Relationships"""
     exam = relationship("Exam", back_populates="questions")
-    answers = relationship("Answer", back_populates="question")
+    # responses = relationship("QuestionResponse", back_populates="question")
+    answers = relationship("Answer", back_populates="question", cascade="all, delete-orphan")
 
     def __init__(self, ExamID, QuestionText, QuestionType):
         self.ExamID = ExamID

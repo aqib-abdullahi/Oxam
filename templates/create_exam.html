@@ -15,6 +15,7 @@
             <li><a href="{{ url_for('view_courses') }}">View courses</a></li>
             <li><a href="{{ url_for('create_exam') }}">Create Exam</a></li>
             <li><a href="{{ url_for('add_question') }}">Question Template</a></li>
+            <li><a href="{{ url_for ('register_students_template') }}">Register Student</a></li>
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
         </ul>
     </div>
@@ -22,12 +23,10 @@
     <div class="content">
         <h1>Instructor Dashboard</h1>
 
-        <!-- ... (your existing content) ... -->
-
         <h2 id="create-course">Create Exam</h2>
         <div class="create-section">
             <form method="POST" action="{{ url_for('create_exam') }}">
-                <label for="">Select a Course:</label>
+                <label for="select">Select a Course:</label>
                 <select name="select-course" id="select">
                     <option value="">Select a Course</option>
                     {% for course_available in available_courses %}
@@ -45,12 +44,11 @@
                 <input type="datetime-local" id="start_time" name="start_time" required><br>
                 <label for="duration">Duration (in minutes):</label>
                 <input type="number" id="duration" name="duration" required><br>
+                <input type="hidden" id="detected-timezone" name="detected_timezone" value="">
                 <button type="submit">Create Exam</button>
             </form>
         </div>
 
-
-        <!-- ... (remaining content) ... -->
     </div>
 </body>
 <style>
@@ -156,6 +154,10 @@ document.addEventListener("DOMContentLoaded", function() {
         hiddenInput.value = course;
     });
 });
+
+    const detectedTimezoneInput = document.getElementById("detected-timezone");
+    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    detectedTimezoneInput.value = userTimezone;
 </script>
 
 </html>

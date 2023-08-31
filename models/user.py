@@ -19,8 +19,11 @@ class User(Base, UserMixin):
     authenticated = Column(Boolean, default=False)
 
     """Relationshps"""
-    courses = relationship("Course", back_populates="instructor")
-    results = relationship("Result", back_populates="user")
+    courses = relationship("Course", back_populates="instructor", cascade="all, delete-orphan")
+    results = relationship("Result", back_populates="user", cascade="all, delete-orphan")
+    registered_courses = relationship("StudentCourse", back_populates="student", cascade="all, delete-orphan")
+    question_responses = relationship("QuestionResponse", back_populates="user")  # Add User relationship
+
 
     def __init__(self, FirstName, LastName, Email, Password, Role, authenticated):
         self.FirstName = FirstName

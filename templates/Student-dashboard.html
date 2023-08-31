@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Student Dashboard</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f1f1f1;
+        }
+
+        .add-course {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-left: 40px;
+        }
+
+        .sidebar h2 {
+            color: #f1f1f1;
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 180px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #333;
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+        }
+
+        .sidebar li a {
+            text-decoration: none;
+            color: whitesmoke;
+        }
+
+        .sidebar ul {
+            padding: 0;
+            text-align: center;
+        }
+
+        .sidebar li {
+            list-style: none;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .content {
+            margin-left: 200px;
+            background-color: white;
+            padding: 20px;
+            margin-top: 20px;
+            margin-right: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1,
+        h2 {
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <h2>Dashboard</h2>
+        <ul>
+            <li><a href="{{ url_for('student_dashboard') }}">View Exams</a></li>
+            <li><a href="{{ url_for('exam_results') }}">Exams results</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <h1>Student Dashboard</h1>
+
+        <h2 id="exam-list">Available Exams</h2>
+        <ul class="exams">
+            {% for exam in exams %}
+            <li>
+                <h3>{{ exam.Title }}</h3>
+                <p>Course: {{ exam.course.CourseCode }}</p>
+                <p>Start Time (UTC): {{ exam.StartTime.strftime('%Y-%m-%d %H:%M:%S') }} UTC</p>
+                <p>Duration: {{ exam.Duration }} minutes</p>
+                <a href="{{ url_for('take_exam', exam_id=exam.ExamID) }}">Start Exam</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
