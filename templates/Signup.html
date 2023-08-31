@@ -89,7 +89,7 @@
             <select id="role" name="Role" class="selection">
                 <option value="Student" {% if form_data.Role == 'Student' %}selected{% endif %}>Student</option>
                 <option value="Instructor" {% if form_data.Role == 'Instructor' %}selected{% endif %}>Instructor</option>
-                <option value="Admin" {% if form_data.Role == 'Admin' %}selected{% endif %}>Admin</option>
+<!--                <option value="Admin" {% if form_data.Role == 'Admin' %}selected{% endif %}>Admin</option>-->
             </select><br>
             <input type="text" required placeholder="First name" value="{{ form_data['FirstName'] }}" name="First name" class="input-field"><br>
             <input type="text" required placeholder="Last name" value="{{ form_data['LastName'] }}" name="Last name" class="input-field"><br>
