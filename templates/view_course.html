@@ -14,6 +14,7 @@
             <li><a href="{{ url_for('create_exam') }}">Create Exam</a></li>
             <li><a href="{{ url_for('add_question') }}">Question Template</a></li>
             <li><a href="{{ url_for ('register_students_template') }}">Register Student</a></li>
+            <li><a href="{{ url_for('view_students_results') }}">Exam performance</a></li>
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
         </ul>
     </div>
@@ -22,6 +23,18 @@
         <h1>Instructor Dashboard</h1>
 
         <h2 id="create-course">Courses created</h2>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                <div class="flash-message {{ category }}">
+                    {{ message }}
+                    <span class="close-button" onclick="this.parentElement.style.display='none'">&times;</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
             <ul class="course-list">
                 {% for course in courses %}
                     <li class="course-item">
@@ -33,18 +46,18 @@
                         <h4>Exams created for {{ course.CourseCode }}: {{ course.CourseName }}</h4>
                         {% for exam in exams %}
                         {% if exam.CourseID == course.CourseID %}
-                        <h5><u><strong>EXAM</strong></u></h5>
-                        <h6>Exam title: {{ exam.Title }}</h6>
-                        <h6>Exam date & time: {{ exam.StartTime }}</h6>
-                        <h6>Exam duration: {{ exam.Duration }}</h6>
-
-                        <div class="course-links">
-                            <a href="/dashboard/view-courses/delete_exam/{{ exam.ExamID }}" onclick="return confirm('Are you sure you want to delete this exam?')">Delete Exam</a>
+                        <div class="exam">
+                            <h4><b>Exam</b></h4>
+                            <p>Exam title: {{ exam.Title }}</p>
+                            <p>Exam date & time: {{ exam.StartTime }}</p>
+                            <p>Exam duration: {{ exam.Duration }}</p>
+                             <div class="course-links">
+                                <a href="/dashboard/view-courses/delete_exam/{{ exam.ExamID }}" onclick="return confirm('Are you sure you want to delete this exam?')" class="delete-exam" style="color: whitesmoke;">Delete Exam</a>
+                                <a href="/dashboard/view-course/view-questions/{{ exam.ExamID }}" class="view-questions">View questions</a>
+                            </div>
                         </div>
                         {% endif %}
-
                         {% endfor %}
-
                         {% endif %}
                         <div class="course-links">
                             <a href="/dashboard/create_exam/{{ course.CourseID }}">Add a new Exam</a>
@@ -59,6 +72,48 @@
     </div>
 </body>
 <style>
+    .exam{
+        background-color: #bbbfbf;
+        padding-top: 3px;
+        padding-bottom: 3px;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        border-radius: 10px;
+        margin-bottom: 7px;
+        max-width: 300px;
+        font-weight: 700;
+    }
+
+    .flash-messages {
+        position: fixed;
+        top: 30px;
+        right: 30px;
+        width: auto;
+        background-color: #007BFF;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        transition: opacity 0.5s ease-in-out;
+    }
+
+    .flash-messages.error {
+        background-color: #FF5733;
+    }
+
+    .flash-messages.success {
+        background-color: #4CAF50;
+    }
+
+    .flash-messages .close-button {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        cursor: pointer;
+        color: white;
+        font-weight: bold;
+    }
+
     body {
         font-family: Arial, sans-serif;
         margin: 0;
@@ -173,6 +228,30 @@
         border: 1px solid #ccc;
         padding: 5px 10px;
         border-radius: 3px;
+        margin-bottom: 5px;
+        font-weight: 700;
+    }
+
+    .view-questions {
+        display: inline-block;
+        margin-right: 10px;
+        color: #333;
+        text-decoration: none;
+        border: 1px solid #ccc;
+        padding: 5px 10px;
+        border-radius: 3px;
+        margin-bottom: 5px;
+    }
+
+    .delete-exam {
+        display: inline-block;
+        margin-right: 10px;
+        background-color: red;
+        text-decoration: none;
+        border: 1px solid #ccc;
+        padding: 5px 10px;
+        border-radius: 10px;
+        margin-bottom:5px;
     }
 
 </style>

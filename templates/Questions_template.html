@@ -4,7 +4,6 @@
 <head>
     <title>Instructor Dashboard</title>
     <!-- <link rel="stylesheet" href="style.css"> -->
-
 </head>
 
 <body>
@@ -16,6 +15,7 @@
             <li><a href="{{ url_for('create_exam') }}">Create Exam</a></li>
             <li><a href="{{ url_for('add_question') }}">Question Template</a></li>
             <li><a href="{{ url_for ('register_students_template') }}">Register Student</a></li>
+            <li><a href="{{ url_for('view_students_results') }}">Exam performance</a></li>
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
         </ul>
     </div>
@@ -24,6 +24,18 @@
         <h1>Instructor Dashboard</h1>
 
         <h2 id="add-question">Add Question</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="flash-message {{ category }}">
+                {{ message }}
+                <span class="close-button" onclick="this.parentElement.style.display='none'">&times;</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
         <form action="{{ url_for('add_question') }}" method="POST" onsubmit="return add_question()">
 
             <select id="selectExam" name="select-exam" required>
@@ -31,7 +43,11 @@
                 {% for exam in exams %}
                 {% for course in courses%}
                 {% if exam.CourseID == course.CourseID %}
+                {%if exam.ExamID == examination_id %}
+                <option value="{{ exam.ExamID }}" selected>{{ course.CourseCode }}: {{ course.CourseName }} ({{ exam.Title }})</option>
+                {% else %}
                 <option value="{{ exam.ExamID }}">{{ course.CourseCode }}: {{ course.CourseName }} ({{ exam.Title }})</option>
+                {% endif %}
                 {% endif %}
                 {% endfor %}
                 {% endfor %}
@@ -75,6 +91,37 @@
 </body>
 
 <style>
+
+    .flash-messages {
+        position: fixed;
+        top: 30px;
+        right: 30px;
+        width: auto;
+        background-color: #007BFF;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        transition: opacity 0.5s ease-in-out;
+    }
+
+    .flash-messages.error {
+        background-color: #FF5733;
+    }
+
+    .flash-messages.success {
+        background-color: #4CAF50;
+    }
+
+    .flash-messages .close-button {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        cursor: pointer;
+        color: white;
+        font-weight: bold;
+    }
+
     body {
         font-family: Arial, sans-serif;
         margin: 0;
@@ -137,10 +184,7 @@
         margin-bottom: 20px;
         border-radius: 10px;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-
-
     }
-
 
     h1,
     h2 {
@@ -191,7 +235,6 @@
         border-radius: 3px;
     }
 
-    /* Additional styles for the new section */
     #add-question {
         margin-top: 20px;
         color: #333;
@@ -269,7 +312,7 @@
 
         if (selectedExam === "") {
             alert("Please select an exam.");
-            event.preventDefault(); // Prevent form submission
+            event.preventDefault();
         }
     });
 

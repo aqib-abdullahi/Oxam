@@ -16,6 +16,7 @@
             <li><a href="{{ url_for('create_exam') }}">Create Exam</a></li>
             <li><a href="{{ url_for('add_question') }}">Question Template</a></li>
             <li><a href="{{ url_for ('register_students_template') }}">Register Student</a></li>
+            <li><a href="{{ url_for('view_students_results') }}">Exam performance</a></li>
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
         </ul>
     </div>
@@ -24,7 +25,18 @@
         <h1>Instructor Dashboard</h1>
         <h2 id="Register-student">Register Student</h2>
         <form id="register-form" action="" method="POST">
-            <div>{{ error }}</div><br>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                <div class="flash-message {{ category }}">
+                    {{ message }}
+                    <span class="close-button" onclick="this.parentElement.style.display='none'">&times;</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
             <label for="search-email">Search Student by Email:</label>
             <input type="email" id="search-email" name="search_email" required>
             <button type="button" id="search-button">Search</button><br><br>
@@ -51,6 +63,36 @@
 </body>
 
 <style>
+    .flash-messages {
+        position: fixed;
+        top: 30px;
+        right: 30px;
+        width: auto;
+        background-color: #007BFF;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        transition: opacity 0.5s ease-in-out;
+    }
+
+    .flash-messages.error {
+        background-color: #FF5733;
+    }
+
+    .flash-messages.success {
+        background-color: #4CAF50;
+    }
+
+    .flash-messages .close-button {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        cursor: pointer;
+        color: white;
+        font-weight: bold;
+    }
+
     body {
         font-family: Arial, sans-serif;
         margin: 0;

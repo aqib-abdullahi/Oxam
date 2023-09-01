@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Exam Results</title>
+    <style>
+            .flash-messages {
+        position: fixed;
+        top: 30px;
+        right: 30px;
+        width: auto;
+        background-color: #007BFF;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        transition: opacity 0.5s ease-in-out;
+    }
+
+    .flash-messages.error {
+        background-color: #FF5733;
+    }
+
+    .flash-messages.success {
+        background-color: #4CAF50;
+    }
+
+    .flash-messages .close-button {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        cursor: pointer;
+        color: white;
+        font-weight: bold;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f1f1f1;
+    }
+
+    .add-course {
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        text-decoration: none;
+        margin-left: 40px;
+    }
+
+    .sidebar h2 {
+        color: #f1f1f1;
+    }
+
+    .sidebar {
+        height: 100%;
+        width: 180px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: #333;
+        padding-top: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: white;
+    }
+
+    .sidebar li a {
+        text-decoration: none;
+        color: whitesmoke;
+    }
+
+    .sidebar ul {
+        padding: 0;
+        text-align: center;
+    }
+
+    .sidebar li {
+        list-style: none;
+        margin-top: 10px;
+        margin-bottom: 50px;
+    }
+
+    .content {
+        margin-left: 200px;
+        background-color: white;
+        padding: 20px;
+        margin-top: 20px;
+        margin-right: 20px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1, h2 {
+        color: #333;
+    }
+
+    #exam-results {
+        margin-top: 20px;
+        color: #333;
+    }
+
+    ul.results {
+        list-style: none;
+        padding: 0;
+    }
+
+    ul.results li {
+        margin-bottom: 20px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    ul.results h3 {
+        margin: 0;
+        color: black;
+    }
+
+    ul.results p {
+        margin: 5px 0;
+    }
+
+
+    .questions-form {
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+
+    .question-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #007BFF;
+    }
+
+
+    .options-list {
+        list-style: none;
+        padding: 0;
+    }
+
+
+    .option-item {
+        margin: 10px 0;
+        display: flex;
+        align-items: center;
+    }
+
+
+    .option-text {
+        margin-left: 10px;
+    }
+
+    .delete-button {
+        background-color: #FF3B3B;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        margin-left: auto;
+    }
+
+    .delete-button:hover {
+        background-color: #FF0000;
+    }
+
+    .add-question {
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        text-decoration: none;
+        margin-left: 40px;
+    }
+
+    .add-question {
+        margin-left: 200px;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <h2>Dashboard</h2>
+        <ul>
+            <li><a href="{{ url_for('create_course_form') }}">Create Course</a></li>
+            <li><a href="{{ url_for('view_courses') }}">View courses</a></li>
+            <li><a href="{{ url_for('create_exam') }}">Create Exam</a></li>
+            <li><a href="{{ url_for('add_question') }}">Question Template</a></li>
+            <li><a href="{{ url_for ('register_students_template') }}">Register Student</a></li>
+            <li><a href="{{ url_for('view_students_results') }}">Exam performance</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-messages">
+        {% for category, message in messages %}
+        <div class="flash-message {{ category }}">
+            {{ message }}
+            <span class="close-button" onclick="this.parentElement.style.display='none'">&times;</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    {% if questions %}
+    {% for question in questions %}
+    <h2 class="question-title">Q: {{ question.QuestionText }}</h2>
+    <ul class="options-list">
+        {% for option in question.answers %}
+        <li class="option-item">
+<!--                <input type="radio" name="answer_{{ question.QuestionID }}" value="{{ option.AnswerText }}">-->
+            <label>{{ option.AnswerText }}</label>
+<!--                <span class="option-text">{{ option.AnswerText }}</span>-->
+<!--                <form method="POST" action="#">-->
+<!--                    <button class="delete-button" type="submit">Delete Option</button>-->
+<!--                </form>-->
+        </li>
+        {% endfor %}
+    </ul>
+    <form method="POST" action="/dashboard/view-courses/view-questions/delete_question/{{ question.ExamID }}/{{ question.QuestionID }}">
+        <button class="delete-button" type="submit" onclick="return confirm('Are you sure you want to delete this question?')">Delete Question</button>
+    </form>
+    </div>
+    {% endfor %}
+    <a href="/dashboard/questions-template/{{ questionid }}" class="add-question">Add questions</a>
+    {% else %}
+    <a href="{{ url_for('add_question') }}" class="add-question">Add questions</a>
+    {% endif %}
+</body>
+
+</html>

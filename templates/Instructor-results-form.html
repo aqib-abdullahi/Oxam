@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Get Exam Results</title>
+    <style>
+
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f1f1f1;
+        }
+
+        .add-course {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-left: 40px;
+        }
+
+        .sidebar h2 {
+            color: #f1f1f1;
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 180px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #333;
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+        }
+
+        .sidebar li a {
+            text-decoration: none;
+            color: whitesmoke;
+        }
+
+        .sidebar ul {
+            padding: 0;
+            text-align: center;
+        }
+
+        .sidebar li {
+            list-style: none;
+            margin-top: 10px;
+            margin-bottom: 50px;
+        }
+
+        .content {
+            margin-left: 200px;
+            background-color: white;
+            padding: 20px;
+            margin-top: 20px;
+            margin-right: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        #get-results {
+            margin-top: 20px;
+            color: #333;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            display: block;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <h2>Dashboard</h2>
+        <ul>
+            <li><a href="{{ url_for('create_course_form') }}">Create Course</a></li>
+            <li><a href="{{ url_for('view_courses') }}">View courses</a></li>
+            <li><a href="{{ url_for('create_exam') }}">Create Exam</a></li>
+            <li><a href="{{ url_for('add_question') }}">Question Template</a></li>
+            <li><a href="{{ url_for ('register_students_template') }}">Register Student</a></li>
+            <li><a href="{{ url_for('view_students_results') }}">Exam performance</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <h1>Get Exam Results</h1>
+        <h2 id="get-results">Select Criteria</h2>
+        <form method="POST" action="#">
+            <label for="course-select">Select Course:</label>
+            <select id="course-select" name="course_id" required>
+
+                <option value="">Select a course</option>
+                {% for course in courses %}
+                <option value="{{ course.CourseID }}">{{ course.CourseCode }}: {{ course.CourseName }}</option>
+                {% endfor %}
+            </select>
+            <label for="exam-select">Select Exam:</label>
+            <select id="exam-select" name="exam_id" required>
+
+            </select>
+            <button type="submit">Get Results</button>
+        </form>
+    </div>
+</body>
+<script>
+    const courseSelect = document.getElementById("course-select");
+    const examSelect = document.getElementById("exam-select");
+
+    courseSelect.addEventListener("change", () => {
+        const selectedCourse = courseSelect.value;
+
+        fetch(`/get_exams_for_course?course_id=${selectedCourse}`)
+            .then(response => response.json())
+            .then(data => {
+                examSelect.innerHTML = "";
+
+                data.exams.forEach(exam => {
+                    const option = document.createElement("option");
+                    option.value = exam.ExamID;
+                    option.textContent = exam.Title;
+                    examSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error("Error fetching exams:", error);
+            });
+    });
+</script>
+
+</html>

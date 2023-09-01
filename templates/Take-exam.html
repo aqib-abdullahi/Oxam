@@ -23,7 +23,7 @@
             padding-left: 10%;
             margin-left: 3%;
             margin-right: 3%;
-            margin-top: 2%;
+            margin-top: 100px;
 
         }
 
@@ -87,14 +87,30 @@
             padding: 5px 10px;
             cursor: pointer;
             font-size: 1.5rem;
-            margin-left: 47%;
+            margin-left: auto;
             margin-top: 3%;
             margin-bottom: 4%;
         }
+
+        .time {
+            position: fixed;
+            top: 0;
+            font-family: Arial, sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            width: 100vw;
+            height: 10vh;
+            background-color: #f1f1f1;
+            padding-top: 20px;
+            text-align: center;
+            place-items: center;
+        }
+
     </style>
 </head>
 
 <body>
+    <div class="time" id="timer" data-exam-duration="{{ exam_duration }}">Time Left: 00:00</div>
     <div class="container">
         <form method="POST" id="questionForm">
             {% for question in questions %}
@@ -106,9 +122,32 @@
                     </label><br>
                 {% endfor %}
             {% endfor %}
-            <div><button class="submit" type="submit" name="submit" value="submit" id="submitBtn" onclick="confirm('Are you sure you want to submit?')">Submit</button></div>
+            <div><button class="submit" type="submit" name="submit" value="submit" id="submitBtn" onclick="return confirm('Are you sure you want to submit?')">Submit</button></div>
         </form>
     </div>
 
 </body>
+<script>
+    const examDurationInMinutes = parseInt(document.getElementById("timer").getAttribute("data-exam-duration"));
+    const examDurationInSeconds = examDurationInMinutes * 60
+    const endTime = new Date().getTime() + examDurationInSeconds * 1000;
+
+    function updateTimer() {
+        const currentTime = new Date().getTime();
+        const timeLeftInSeconds = Math.max(0, Math.floor((endTime - currentTime) / 1000));
+
+        const minutes = Math.floor(timeLeftInSeconds / 60);
+        const seconds = timeLeftInSeconds % 60;
+
+        const timerElement = document.getElementById("timer");
+        timerElement.textContent = `Time Left: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+        if (timeLeftInSeconds === 0) {
+            document.getElementById("questionForm").submit();
+        }
+    }
+
+setInterval(updateTimer, 1000);
+
+</script>
 </html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Exam Results</title>
+    <style>
+        /* Your existing CSS styles here */
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f1f1f1;
+        }
+
+        .add-course {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-left: 40px;
+        }
+
+        .sidebar h2 {
+            color: #f1f1f1;
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 180px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #333;
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+        }
+
+        .sidebar li a {
+            text-decoration: none;
+            color: whitesmoke;
+        }
+
+        .sidebar ul {
+            padding: 0;
+            text-align: center;
+        }
+
+        .sidebar li {
+            list-style: none;
+            margin-top: 10px;
+            margin-bottom: 50px;
+        }
+
+        .content {
+            margin-left: 200px;
+            background-color: white;
+            padding: 20px;
+            margin-top: 20px;
+            margin-right: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        /* Additional styles for the new section */
+        #exam-results {
+            margin-top: 20px;
+            color: #333;
+        }
+
+        ul.results {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul.results li {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        ul.results h3 {
+            margin: 0;
+            color: black;
+        }
+
+        ul.results p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <h2>Dashboard</h2>
+        <ul>
+            <li><a href="{{ url_for('create_course_form') }}">Create Course</a></li>
+            <li><a href="{{ url_for('view_courses') }}">View courses</a></li>
+            <li><a href="{{ url_for('create_exam') }}">Create Exam</a></li>
+            <li><a href="{{ url_for('add_question') }}">Question Template</a></li>
+            <li><a href="{{ url_for ('register_students_template') }}">Register Student</a></li>
+            <li><a href="{{ url_for('view_students_results') }}">Exam performance</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <h1>Exam Results</h1>
+<!--        <h2 id="exam-results">Results for {{ course_name }} - {{ exam_title }}</h2>-->
+        <ul class="results">
+            {% for result in results %}
+            <li>
+                <h3>Student: {{ result.user.FirstName }} {{ result.user.LastName }}</h3>
+                <h3>Email: {{ result.user.Email }}</h3>
+                <p>Score: {{ result.score }}</p>
+                <p>Timestamp: {{ result.Timestamp.strftime('%Y-%m-%d %H:%M:%S %Z') }}</p>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+
+</html>

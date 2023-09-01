@@ -36,5 +36,33 @@ A web application for conducting and managing exams in an educational setting. S
 
 1. Clone the repository:
 
-   bash
-   ```git clone https://github.com/aqib-abdullahi.Oxam.git```
+   ```bash
+   git clone https://github.com/aqib-abdullahi.Oxam.git
+   
+2. Navigate to the project directory:
+
+   ```bash
+   cd Oxam
+   
+3. Create a virtual environment 
+   ```
+   python3 -m venv venv
+   source venv/bin/activate
+   
+4. Install the required packages
+   ```
+   pip install -r requirements.txt
+   
+5. Setting up .env
+   
+   - Create a .env file in the project root 
+   - Add your sensitive configuration data to the '.env' file.
+   - The configuration data should be inbetween the quotation marks.
+   ```
+   DB_HOST=""
+   DB_PORT=""
+   DB_NAME=""
+   DB_USER=""
+   DB_PASS=""
+   SECRET_KEY = ""
+

@@ -12,7 +12,7 @@ from models.user import User
 from models.student_course import StudentCourse
 from models.responses import QuestionResponse
 from dotenv import load_dotenv
-from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy.orm import sessionmaker, scoped_session, joinedload
 import os
 
 load_dotenv()
