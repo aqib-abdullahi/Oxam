@@ -1,0 +1,40 @@
+# Oxam
+
+# Educational Exam Platform
+
+A web application for conducting and managing exams in an educational setting. Students can take exams, submit answers, and view their scores, while instructors can create exams, review student scores, and manage course content.
+
+## Table of Contents
+
+- [Features](#features)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Setting Up .env](#setting-up-env)
+- [Usage](#usage)
+- [Screenshots](#screenshots)
+
+## Features
+
+- Role-based access control for students and instructors.
+- Create and manage exams with various question types.
+- Take exams, submit answers, and view scores.
+- Instructor dashboard to review student scores and manage courses.
+
+## Getting Started
+
+### Prerequisites
+
+- Python 3.x
+- Flask
+- SQLAlchemy
+- Flask-Login
+- python-dotenv
+- Other dependencies (check `requirements.txt`)
+
+### Installation
+
+1. Clone the repository:
+
+   bash
+   ```git clone https://github.com/aqib-abdullahi.Oxam.git```
