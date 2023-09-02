@@ -15,7 +15,7 @@
             <li><a href="{{ url_for('view_courses') }}">View courses</a></li>
             <li><a href="{{ url_for('create_exam') }}">Create Exam</a></li>
             <li><a href="{{ url_for('add_question') }}">Question Template</a></li>
-            <li><a href="{{ url_for ('register_students_template') }}">Register Student</a></li>
+            <li><a {% if current_page == "Register Student" %}class="active"{% endif %} href="{{ url_for ('register_students_template') }}">Register Student</a></li>
             <li><a href="{{ url_for('view_students_results') }}">Exam performance</a></li>
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
         </ul>
@@ -63,6 +63,12 @@
 </body>
 
 <style>
+    .sidebar ul li .active {
+        background-color: whitesmoke;
+        color: black;
+        padding: 20px 30px;
+    }
+
     .flash-messages {
         position: fixed;
         top: 30px;

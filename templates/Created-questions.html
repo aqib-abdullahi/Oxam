@@ -190,6 +190,12 @@
     .add-question {
         margin-left: 200px;
     }
+
+    .sidebar ul li .active {
+        background-color: whitesmoke;
+        color: black;
+        padding: 21px 42.5px;
+    }
     </style>
 </head>
 
@@ -198,7 +204,7 @@
         <h2>Dashboard</h2>
         <ul>
             <li><a href="{{ url_for('create_course_form') }}">Create Course</a></li>
-            <li><a href="{{ url_for('view_courses') }}">View courses</a></li>
+            <li><a {% if current_page == "View courses" %}class="active"{% endif %} href="{{ url_for('view_courses') }}">View courses</a></li>
             <li><a href="{{ url_for('create_exam') }}">Create Exam</a></li>
             <li><a href="{{ url_for('add_question') }}">Question Template</a></li>
             <li><a href="{{ url_for ('register_students_template') }}">Register Student</a></li>

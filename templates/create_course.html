@@ -11,7 +11,7 @@
     <div class="sidebar">
         <h2>Dashboard</h2>
         <ul>
-            <li><a href="{{ url_for('create_course_form') }}">Create Course</a></li>
+            <li><a {% if current_page == "Create Course" %}class="active"{% endif %} href="{{ url_for('create_course_form') }}">Create Course</a></li>
             <li><a href="{{ url_for('view_courses') }}">View courses</a></li>
             <li><a href="{{ url_for('create_exam') }}">Create Exam</a></li>
             <li><a href="{{ url_for('add_question') }}">Question Template</a></li>
@@ -44,6 +44,12 @@
     </div>
 </body>
 <style>
+    .sidebar ul li .active {
+        background-color: whitesmoke;
+        color: black;
+        padding: 21px 38px;
+    }
+
     body {
         font-family: Arial, sans-serif;
         margin: 0;

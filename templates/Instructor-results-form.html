@@ -109,6 +109,12 @@
         button:hover {
             background-color: #0056b3;
         }
+
+        .sidebar ul li .active {
+            background-color: whitesmoke;
+            color: black;
+            padding: 21px 22px;
+        }
     </style>
 </head>
 
@@ -121,7 +127,7 @@
             <li><a href="{{ url_for('create_exam') }}">Create Exam</a></li>
             <li><a href="{{ url_for('add_question') }}">Question Template</a></li>
             <li><a href="{{ url_for ('register_students_template') }}">Register Student</a></li>
-            <li><a href="{{ url_for('view_students_results') }}">Exam performance</a></li>
+            <li><a {% if current_page == "Exam performance" %}class="active"{% endif %} href="{{ url_for('view_students_results') }}">Exam performance</a></li>
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
         </ul>
     </div>

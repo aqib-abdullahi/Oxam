@@ -143,3 +143,9 @@ def get_question(question_id):
     question = session.query(Question).filter_by(QuestionID=question_id).first()
     session.close()
     return question
+
+def get_user_by_id(user_id):
+    session = storage.get_session()
+    user = session.query(User).get(user_id)
+    storage.close()
+    return user

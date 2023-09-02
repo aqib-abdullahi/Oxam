@@ -10,7 +10,7 @@
         <h2>Dashboard</h2>
         <ul>
             <li><a href="{{ url_for('create_course_form') }}">Create Course</a></li>
-            <li><a href="{{ url_for('view_courses') }}">View courses</a></li>
+            <li><a {% if current_page == "View courses" %}class="active"{% endif %} href="{{ url_for('view_courses') }}">View courses</a></li>
             <li><a href="{{ url_for('create_exam') }}">Create Exam</a></li>
             <li><a href="{{ url_for('add_question') }}">Question Template</a></li>
             <li><a href="{{ url_for ('register_students_template') }}">Register Student</a></li>
@@ -72,6 +72,13 @@
     </div>
 </body>
 <style>
+    .sidebar ul li .active {
+        background-color: whitesmoke;
+        color: black;
+        padding: 21px 42.5px;
+        transition: 0.3s all ease;
+    }
+
     .exam{
         background-color: #bbbfbf;
         padding-top: 3px;
