@@ -8,11 +8,18 @@ from models.responses import QuestionResponse
 from models.answer import Answer
 from models.result import Result
 from models.question import Question
+from models.studentlog import Studentlog
 from sqlalchemy.orm import joinedload
 
 def get_user_by_email(email):
     session = storage.get_session()
     user = session.query(User).filter_by(Email = email).first()
+    session.close()
+    return user
+
+def get_user(user_id):
+    session = storage.get_session()
+    user = session.query(User).get(user_id)
     session.close()
     return user
 
@@ -135,7 +142,6 @@ def get_exam_results(exam_id):
 def get_questions(exam_id):
     session = storage.get_session()
     questions = session.query(Question).filter_by(ExamID=exam_id).options(joinedload(Question.answers)).all()
-    session.close()
     return questions
 
 def get_question(question_id):
@@ -149,3 +155,15 @@ def get_user_by_id(user_id):
     user = session.query(User).get(user_id)
     storage.close()
     return user
+
+def get_student_exam_start_time(user_id, exam_id):
+    session = storage.get_session()
+    start_time = session.query(Studentlog).filter_by(ExamID=exam_id, UserID=user_id).first()
+    session.close()
+    return start_time
+
+def get_registered_students(course_id):
+    session = storage.get_session()
+    students = session.query(StudentCourse).filter_by(CourseID=course_id).all()
+    session.close()
+    return students

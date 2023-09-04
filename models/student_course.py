@@ -2,7 +2,7 @@
 """This module takes the student course class"""
 from models.base import Base
 from sqlalchemy.orm import relationship
-from sqlalchemy import Column, Integer, ForeignKey
+from sqlalchemy import Column, Integer, ForeignKey, DateTime
 
 class StudentCourse(Base):
     """defines StudentCourse with attributes"""

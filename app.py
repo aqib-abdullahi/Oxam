@@ -11,6 +11,7 @@ from models.question import Question
 from models.answer import Answer
 from models.student_course import StudentCourse
 from models.result import Result
+from models.studentlog import Studentlog
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from models.engine import query_functions
 from passlib.hash import bcrypt_sha256
@@ -124,7 +125,8 @@ def student_dashboard():
         for course in student_courses:
             exams = query_functions.get_user_exams(course.CourseID)
             available_exams.extend(exams)
-        return render_template("Student-dashboard.html", exams=available_exams)
+            current_page = "View Exams"
+        return render_template("Student-dashboard.html", exams=available_exams, current_page=current_page)
     else:
         # flask.abort(401)
         return redirect(url_for('signin'))
@@ -280,6 +282,17 @@ def create_exam(course_id=None):
         # flask.abort(401)
         return redirect(url_for('signin'))
 
+@app.route("/dashboard/view-courses/register-students/<int:course_id>")
+def registered_students(course_id):
+    users = []
+    registered_students = query_functions.get_registered_students(course_id)
+    for student in registered_students:
+        users.append(query_functions.get_user(student.StudentID))
+
+    for user in users:
+        print(user.Email)
+    return render_template("Registered-students.html", registered_students=registered_students, users=users)
+
 @login_required
 @app.route("/dashboard/view-courses/delete_exam/<int:exam_id>", methods=['GET'], strict_slashes=False)
 def delete_exam(exam_id):
@@ -370,7 +383,7 @@ def register_students_template():
 
             existing_registration = query_functions.get_student_course(StudentID, CourseID)
             if existing_registration:
-                error =  "" #Student already registered to this course.
+                # error =  "" #Student already registered to this course.
                 flash('Student already registered', 'error')
                 return render_template("Register_students.html", courses=available_courses, current_page=current_page)
 
@@ -385,6 +398,11 @@ def register_students_template():
         # flask.abort(401)
         return redirect(url_for('signin'))
 
+@app.route("/take_exam/<int:exam_id>/warning", strict_slashes=False)
+def exam_start_warning(exam_id):
+    exam = query_functions.get_exam(exam_id)
+    return render_template("Warning.html", exam=exam)
+
 @login_required
 @app.route("/take_exam/<int:exam_id>", methods=['GET', 'POST'])
 def take_exam(exam_id):
@@ -398,11 +416,22 @@ def take_exam(exam_id):
                 if exam:
                     current_time = datetime.utcnow()
                     exam_duration = exam.Duration
-                    questions = exam.questions
+                    # questions = exam.questions
+                    questions = query_functions.get_questions(exam.ExamID)
+                    examId = exam.ExamID
                     total_questions = len(questions)
                     question_index = int(0)
                     if current_time >= exam.StartTime:
-                        return render_template("Take-exam.html", questions=questions, question_index=question_index, exam_duration=exam_duration)
+                        student_start_time = query_functions.get_student_exam_start_time(user_id=current_user.get_identification(), exam_id=examId)
+                        if student_start_time:
+                            return render_template("Take-exam.html", questions=questions, question_index=question_index,
+                                                   exam_duration=exam_duration, examId=examId)
+                        else:
+                            studentlog = Studentlog(ExamID=exam.ExamID, ExamStartedAt=datetime.utcnow(), UserID=current_user.get_identification())
+                            storage.new(studentlog)
+                            storage.save()
+                            return render_template("Take-exam.html", questions=questions, question_index=question_index,
+                                                   exam_duration=exam_duration, examId=examId)
                     else:
                         return "exam unavailable. check back later"
                 else:
@@ -442,18 +471,29 @@ def take_exam(exam_id):
         else:
             return redirect(url_for('signin'))
 
+@app.route("/get_start_time/<int:exam_id>", methods=['GET'])
+def get_start_time(exam_id):
+    exam = query_functions.get_student_exam_start_time(exam_id=exam_id, user_id=current_user.get_identification())
+    start_time = exam.ExamStartedAt
+    if start_time:
+        return jsonify({'start_time': start_time})
+    else:
+        return jsonify({'start_time': None})
+
+
 @login_required
 @app.route("/student-dashboard/exam_results", strict_slashes=False)
 def exam_results():
     if current_user.is_authenticated and current_user.Role == 'Student':
         user_results = query_functions.get_user_results(current_user.get_identification())
-        return render_template("Results.html", results=user_results)
+        current_page = "Exams results"
+        return render_template("Results.html", results=user_results, current_page=current_page)
     else:
         return redirect(url_for('signin'))
 
 @app.route("/take_exam/submission", strict_slashes=False)
 def thank_you():
-    return redirect(url_for('exam_results'))
+    return redirect(url_for('student_dashboard'))
 
 @app.after_request
 def add_header(response):
@@ -463,7 +503,7 @@ def add_header(response):
 @app.before_request
 def before_request():
     session.permanent = True
-    app.permanent_session_lifetime = timedelta(minutes=1440)
+    app.permanent_session_lifetime = timedelta(minutes=60)
     session.modified = True
 
 @login_manager.unauthorized_handler

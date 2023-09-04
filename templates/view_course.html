@@ -61,6 +61,7 @@
                         {% endif %}
                         <div class="course-links">
                             <a href="/dashboard/create_exam/{{ course.CourseID }}">Add a new Exam</a>
+                            <a href="/dashboard/view-courses/register-students/{{ course.CourseID }}">Registered Students</a>
                             <a href="/dashboard/view-courses/delete_course/{{ course.CourseID }}" onclick="return confirm('Are you sure you want to delete this COURSE? This will also delete all exams associated with this course.')">Delete Course</a>
                         </div>
 
@@ -76,7 +77,6 @@
         background-color: whitesmoke;
         color: black;
         padding: 21px 42.5px;
-        transition: 0.3s all ease;
     }
 
     .exam{

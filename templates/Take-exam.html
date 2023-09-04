@@ -112,7 +112,7 @@
 <body>
     <div class="time" id="timer" data-exam-duration="{{ exam_duration }}">Time Left: 00:00</div>
     <div class="container">
-        <form method="POST" id="questionForm">
+        <form method="POST" id="questionForm" class="foorm" action="{{ url_for('take_exam', exam_id=examId) }}">
             {% for question in questions %}
                 <h2>Q: {{ question.QuestionText }}</h2>
                 {% for option in question.answers %}
@@ -124,30 +124,101 @@
             {% endfor %}
             <div><button class="submit" type="submit" name="submit" value="submit" id="submitBtn" onclick="return confirm('Are you sure you want to submit?')">Submit</button></div>
         </form>
+        <input type="hidden" value="{{ examId }}" name="examID" id="examId" examId="{{ examId }}">
     </div>
 
 </body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     const examDurationInMinutes = parseInt(document.getElementById("timer").getAttribute("data-exam-duration"));
-    const examDurationInSeconds = examDurationInMinutes * 60
-    const endTime = new Date().getTime() + examDurationInSeconds * 1000;
+    const examDurationInSeconds = examDurationInMinutes * 60;
+    let timeInterval;
 
-    function updateTimer() {
-        const currentTime = new Date().getTime();
-        const timeLeftInSeconds = Math.max(0, Math.floor((endTime - currentTime) / 1000));
-
-        const minutes = Math.floor(timeLeftInSeconds / 60);
-        const seconds = timeLeftInSeconds % 60;
-
-        const timerElement = document.getElementById("timer");
-        timerElement.textContent = `Time Left: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-
-        if (timeLeftInSeconds === 0) {
-            document.getElementById("questionForm").submit();
-        }
+    function submitAction() {
+        const form = document.getElementById("questionForm");
+        HTMLFormElement.prototype.submit.call(form);
     }
 
-setInterval(updateTimer, 1000);
+    function startTimer() {
+        const endTime = new Date().getTime() + examDurationInSeconds * 1000;
 
+        function updateTimer() {
+            const currentTime = new Date().getTime();
+            const timeLeftInSeconds = Math.max(0, Math.floor((endTime - currentTime) / 1000));
+
+            const minutes = Math.floor(timeLeftInSeconds / 60);
+            const seconds = timeLeftInSeconds % 60;
+
+            const timerElement = document.getElementById("timer");
+            timerElement.textContent = `Time Left: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+            if (timeLeftInSeconds <= 0) {
+                clearInterval(timeInterval);
+                submitAction();
+            }
+        }
+        updateTimer();
+        timeInterval = setInterval(updateTimer, 1000);
+    }
+
+    function initializeTimer(examId) {
+        $.ajax({
+            url: '/get_start_time/' + examId,
+            method: 'GET',
+            success: function (response) {
+                const startTimeFromServer = response.start_time;
+                console.log(startTimeFromServer);
+                if (startTimeFromServer) {
+                    const currentTime = new Date().getTime();
+                    console.log(currentTime);
+                    const startTimeFrom = new Date(startTimeFromServer)
+                    const time = startTimeFrom.getTime()
+                    console.log(time)
+                    const timeDifferenceInSeconds = Math.floor((time - currentTime) / 1000);
+                    console.log(timeDifferenceInSeconds)
+                    const timeLeftInSeconds = examDurationInSeconds - timeDifferenceInSeconds;
+                    console.log(timeLeftInSeconds)
+
+                    if (timeLeftInSeconds <= 0) {
+                        submitAction();
+                    } else {
+                        startTime();
+                        function startTime() {
+                            const endTime = new Date(startTimeFromServer).getTime() + examDurationInSeconds * 1000;
+
+                            function updateTime() {
+                                const currentTime = new Date().getTime();
+                                const timeLeftInSeconds = Math.max(0, Math.floor((endTime - currentTime) / 1000));
+
+                                const minutes = Math.floor(timeLeftInSeconds / 60);
+                                const seconds = timeLeftInSeconds % 60;
+
+                                const timerElement = document.getElementById("timer");
+                                timerElement.textContent = `Time Left: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+                                if (timeLeftInSeconds <= 0) {
+                                    clearInterval(timeInterval);
+                                    submitAction();
+                                }
+                            }
+                            updateTime();
+                            timeInterval = setInterval(updateTime, 1000);
+                        }
+                    }
+                } else {
+                    startTimer();
+                }
+            },
+            error: function (error) {
+            }
+        });
+    }
+
+    let examI = document.getElementById("examId");
+    let examId = examI.value;
+    console.log(examId)
+    $(document).ready(function () {
+        initializeTimer(examId);
+    });
 </script>
 </html>

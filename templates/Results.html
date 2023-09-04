@@ -71,6 +71,12 @@
         h2 {
             color: #333;
         }
+
+        .sidebar ul li .active {
+        background-color: whitesmoke;
+        color: black;
+        padding: 15px 39.7px;
+        }
     </style>
 </head>
 
@@ -79,7 +85,7 @@
         <h2>Dashboard</h2>
         <ul>
             <li><a href="{{ url_for('student_dashboard') }}">View Exams</a></li>
-            <li><a href="{{ url_for('exam_results') }}">Exams results</a></li>
+            <li><a {% if current_page == "Exams results" %}class="active"{% endif %} href="{{ url_for('exam_results') }}">Exams results</a></li>
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
         </ul>
     </div>

@@ -21,6 +21,7 @@ class Exam(Base):
     results = relationship("Result", back_populates="exam", cascade="all, delete-orphan")
     questions = relationship("Question", back_populates="exam", cascade="all, delete-orphan")
     responses = relationship("QuestionResponse", back_populates="exams")
+    exam_started = relationship("Studentlog", back_populates="exam", cascade="all, delete-orphan")
 
     def __init__(self, CourseID, Title, StartTime, Duration):
         self.CourseID = CourseID

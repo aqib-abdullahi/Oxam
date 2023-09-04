@@ -9,21 +9,17 @@ class QuestionResponse(Base):
     __tablename__ = "QuestionResponses"
 
     ResponseID = Column(Integer, primary_key=True)
-    UserID = Column(Integer, ForeignKey('Users.UserID'))  # Add User foreign key
+    UserID = Column(Integer, ForeignKey('Users.UserID'))
     QuestionIndex = Column(Integer)
     ExamID = Column(Integer, ForeignKey('Exams.ExamID'))
-    # QuestionID = Column(Integer, ForeignKey('Questions.QuestionID'))
     Response = Column(Text)
 
     """Relationships"""
-    # question = relationship("Question", back_populates="responses")
-    user = relationship("User", back_populates="question_responses")  # Add User relationship
+    user = relationship("User", back_populates="question_responses")
     exams = relationship("Exam", back_populates="responses")
 
     def __init__(self, UserID, QuestionIndex, Response, ExamID):
         self.UserID = UserID
-        # self.ResultID = ResultID
         self.QuestionIndex = QuestionIndex
         self.ExamID = ExamID
         self.Response = Response
-        # self.QuestionID = QuestionID

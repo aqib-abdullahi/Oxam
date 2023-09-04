@@ -23,12 +23,12 @@ class User(Base, UserMixin):
     results = relationship("Result", back_populates="user", cascade="all, delete-orphan")
     registered_courses = relationship("StudentCourse", back_populates="student", cascade="all, delete-orphan")
     question_responses = relationship("QuestionResponse", back_populates="user")  # Add User relationship
+    user_studentlog = relationship("Studentlog", back_populates="user")
 
 
     def __init__(self, FirstName, LastName, Email, Password, Role, authenticated):
         self.FirstName = FirstName
         self.LastName = LastName
-        # self.UserName = UserName
         self.Email = Email
         self.Password = Password
         self.Role = Role

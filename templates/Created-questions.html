@@ -4,7 +4,7 @@
 <head>
     <title>Exam Results</title>
     <style>
-            .flash-messages {
+        .flash-messages {
         position: fixed;
         top: 30px;
         right: 30px;
@@ -233,12 +233,7 @@
     <ul class="options-list">
         {% for option in question.answers %}
         <li class="option-item">
-<!--                <input type="radio" name="answer_{{ question.QuestionID }}" value="{{ option.AnswerText }}">-->
             <label>{{ option.AnswerText }}</label>
-<!--                <span class="option-text">{{ option.AnswerText }}</span>-->
-<!--                <form method="POST" action="#">-->
-<!--                    <button class="delete-button" type="submit">Delete Option</button>-->
-<!--                </form>-->
         </li>
         {% endfor %}
     </ul>
@@ -249,7 +244,7 @@
     {% endfor %}
     <a href="/dashboard/questions-template/{{ questionid }}" class="add-question">Add questions</a>
     {% else %}
-    <a href="{{ url_for('add_question') }}" class="add-question">Add questions</a>
+    <a href="/dashboard/questions-template/{{ questionid }}" class="add-question">Add questions</a>
     {% endif %}
 </body>
 

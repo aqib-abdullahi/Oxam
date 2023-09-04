@@ -73,6 +73,26 @@
         h2 {
             color: #333;
         }
+
+        .start {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .start:hover {
+            background-color: #0056b3;
+        }
+
+        .sidebar ul li .active {
+        background-color: whitesmoke;
+        color: black;
+        padding: 15px 46.1px;
+        }
     </style>
 </head>
 
@@ -80,7 +100,7 @@
     <div class="sidebar">
         <h2>Dashboard</h2>
         <ul>
-            <li><a href="{{ url_for('student_dashboard') }}">View Exams</a></li>
+            <li><a {% if current_page == "View Exams" %}class="active"{% endif %} href="{{ url_for('student_dashboard') }}">View Exams</a></li>
             <li><a href="{{ url_for('exam_results') }}">Exams results</a></li>
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
         </ul>
@@ -97,7 +117,7 @@
                 <p>Course: {{ exam.course.CourseCode }}</p>
                 <p>Start Time (UTC): {{ exam.StartTime.strftime('%Y-%m-%d %H:%M:%S') }} UTC</p>
                 <p>Duration: {{ exam.Duration }} minutes</p>
-                <a href="{{ url_for('take_exam', exam_id=exam.ExamID) }}">Start Exam</a>
+                <a href="{{ url_for('exam_start_warning', exam_id=exam.ExamID) }}" class="start">Start Exam</a>
             </li>
             {% endfor %}
         </ul>
