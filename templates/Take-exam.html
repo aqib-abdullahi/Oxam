@@ -141,7 +141,6 @@
 
     function startTimer() {
         const endTime = new Date().getTime() + examDurationInSeconds * 1000;
-
         function updateTimer() {
             const currentTime = new Date().getTime();
             const timeLeftInSeconds = Math.max(0, Math.floor((endTime - currentTime) / 1000));
@@ -161,6 +160,8 @@
         timeInterval = setInterval(updateTimer, 1000);
     }
 
+
+
     function initializeTimer(examId) {
         $.ajax({
             url: '/get_start_time/' + examId,
@@ -170,14 +171,10 @@
                 console.log(startTimeFromServer);
                 if (startTimeFromServer) {
                     const currentTime = new Date().getTime();
-                    console.log(currentTime);
                     const startTimeFrom = new Date(startTimeFromServer)
                     const time = startTimeFrom.getTime()
-                    console.log(time)
                     const timeDifferenceInSeconds = Math.floor((time - currentTime) / 1000);
-                    console.log(timeDifferenceInSeconds)
                     const timeLeftInSeconds = examDurationInSeconds - timeDifferenceInSeconds;
-                    console.log(timeLeftInSeconds)
 
                     if (timeLeftInSeconds <= 0) {
                         submitAction();
@@ -185,7 +182,6 @@
                         startTime();
                         function startTime() {
                             const endTime = new Date(startTimeFromServer).getTime() + examDurationInSeconds * 1000;
-
                             function updateTime() {
                                 const currentTime = new Date().getTime();
                                 const timeLeftInSeconds = Math.max(0, Math.floor((endTime - currentTime) / 1000));
@@ -216,7 +212,6 @@
 
     let examI = document.getElementById("examId");
     let examId = examI.value;
-    console.log(examId)
     $(document).ready(function () {
         initializeTimer(examId);
     });

@@ -9,6 +9,7 @@ from models.answer import Answer
 from models.result import Result
 from models.question import Question
 from models.studentlog import Studentlog
+from models.passreset import PasswordResetToken
 from sqlalchemy.orm import joinedload
 
 def get_user_by_email(email):
@@ -167,3 +168,23 @@ def get_registered_students(course_id):
     students = session.query(StudentCourse).filter_by(CourseID=course_id).all()
     session.close()
     return students
+
+def get_student_registered(student_id, course_id):
+    session = storage.get_session()
+    student = session.query(StudentCourse).filter_by(StudentID = student_id, CourseID = course_id).first()
+    return student
+
+def get_token(Token):
+    session = storage.get_session()
+    token = session.query(PasswordResetToken).filter_by(Token = Token).first()
+    session.close()
+    if token:
+        return token
+    else:
+        return None
+
+def get_token_user(user_id):
+    session = storage.get_session()
+    token = session.query(PasswordResetToken).filter_by(UserID = user_id).first()
+    session.close()
+    return token

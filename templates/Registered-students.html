@@ -20,14 +20,13 @@
             background-color: white;
             border-radius: 10px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            padding-left: 10%;
-            padding-right: 10%;
-<!--            margin-left: 3%;-->
-<!--            margin-right: 3%;-->
+            padding-left: 5%;
+            padding-right: 5%;
             margin-left: auto;
             margin-right: auto;
-            margin-top: 100px;
-            max-width: 700px;
+            width: fit-content;
+            margin-top: 80px;
+            max-width: 1100px;
             text-align: center;
         }
 
@@ -48,24 +47,77 @@
             color: white;
             border: none;
             border-radius: 5px;
+            padding: 2px 7px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        table a {
+            background-color: #ed3a2d;
+            color: white;
+            border: none;
+            border-radius: 5px;
             padding: 5px 10px;
             cursor: pointer;
             text-decoration: none;
-            font-size: 1.4rem;
         }
 
-        a:hover {
+        .add a:hover {
             background-color: #0056b3;
         }
+
+        table a:hover {
+            background-color: #a82b22;
+        }
+
+        table {
+            margin: 0 auto;
+            border-spacing: 10px;
+        }
+
+        th {
+            padding-left: 2.5rem;
+        }
+
+        .add {
+            position: absolute;
+            right: 10%;
+            top: 4%;
+            font-size: 1.2rem;
+        }
+
+        td {
+            padding-left: 2.5rem;
+        }
+
 
     </style>
 </head>
 
 <body>
     <div class="container">
-        {% for user in users %}
-        <h3>{{ user.FirstName }}</h3>
+        <h2>Registered Students</h2>
+        <h2>{{ course.CourseCode }}: {{ course.CourseName}}</h2>
+        <table>
+            <thead>
+                <th>Firstname</th>
+                <th>Lastname</th>
+                <th>Email</th>
+                <th></th>
+            </thead>
+            <hr>
+            <tbody>
+            {% for user in users %}
+                <td>{{ user.FirstName }}</td>
+                <td>{{ user.LastName }}</td>
+                <td>{{ user.Email }}</td>
+                <td><a href="/dashboard/view-courses/view-registered-students/unregister/{{ course.CourseID }}/{{ user.UserID }}">Delete</a></td>
+            </tbody>
+        </table>
         {% endfor %}
+        <div class="add">
+            <a href="/dashboard/register_students_template/{{ Course_id }}">Add student</a>
+        </div>
     </div>
 </body>
 

@@ -23,8 +23,9 @@ class Exam(Base):
     responses = relationship("QuestionResponse", back_populates="exams")
     exam_started = relationship("Studentlog", back_populates="exam", cascade="all, delete-orphan")
 
-    def __init__(self, CourseID, Title, StartTime, Duration):
+    def __init__(self, CourseID, Title, StartTime, Duration, IsAvailable):
         self.CourseID = CourseID
         self.Title = Title
         self.StartTime = StartTime
         self.Duration = Duration
+        self.IsAvailable = IsAvailable
