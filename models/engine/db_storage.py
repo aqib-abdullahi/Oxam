@@ -32,7 +32,12 @@ class DBstorage:
 
     def __init__(self):
         """initializes the database"""
-        self.__engine = create_engine(conn_string, echo=True)
+        self.__engine = create_engine(conn_string,
+                                      connect_args= {
+                                          "ssl": {
+                                              "ssl_ca": "/etc/ssl/certs/ca-certificates.crt"
+                                          }
+                                      }, echo=True)
 
     def new(self, obj):
         """creates new  object to database"""
