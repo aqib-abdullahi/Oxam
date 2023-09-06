@@ -192,7 +192,10 @@ def reset_password(reset_token):
             user = query_functions.get_user(user_id)
             hashed = bcrypt_sha256.hash(new_password)
             user.Password = hashed
-            storage.save()
+            try:
+                storage.save()
+            except Exception as e:
+                print("Error:", str(e))
             return redirect(url_for('signin'))
         else:
             error = "Password and Repeat Password doesn't match"
