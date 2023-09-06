@@ -118,7 +118,7 @@
                 <td>{{ user.FirstName }}</td>
                 <td>{{ user.LastName }}</td>
                 <td>{{ user.Email }}</td>
-                <td><a href="/dashboard/view-courses/view-registered-students/unregister/{{ course.CourseID }}/{{ user.UserID }}">Delete</a></td>
+                <td><a href="/dashboard/view-courses/view-registered-students/unregister/{{ course.CourseID }}/{{ user.UserID }}" onclick="return confirm('Are you sure you want to unregister this student?')">Delete</a></td>
             {% endfor %}<br>
             </tbody>
         </table>
