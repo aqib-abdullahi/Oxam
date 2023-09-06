@@ -281,7 +281,7 @@ def view_students_results():
             course_id = request.form['course_id']
             exam_id = request.form["exam_id"]
             results = query_functions.get_exam_results(exam_id)
-            return render_template("instructor-exam-results.html", results=results, current_page=current_page)
+            return render_template("Instructor-exam-results.html", results=results, current_page=current_page)
         else:
             courses = query_functions.get_user_courses(current_user.get_identification())
             return render_template("Instructor-results-form.html", courses=courses, current_page=current_page)
