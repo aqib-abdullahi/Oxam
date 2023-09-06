@@ -23,7 +23,7 @@ passlib==1.7.4
 pexpect==4.8.0
 platformdirs==3.10.0
 ptyprocess==0.7.0
-python-dotenv==1.0.0
+python-dotenv
 pytz==2023.3
 sh==2.0.4
 SQLAlchemy==2.0.20
