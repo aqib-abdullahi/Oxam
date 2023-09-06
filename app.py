@@ -189,12 +189,15 @@ def reset_password(reset_token):
         if new_password == confirm_password:
             db_token = query_functions.get_token(reset_token)
             user_id = db_token.UserID
+            session = storage.get_session()
+            session.begin()
             user = query_functions.get_user(user_id)
             hashed = bcrypt_sha256.hash(new_password)
             print(hashed)
             user.Password = hashed
             try:
                 storage.save()
+                storage.close()
             except Exception as e:
                 print("Error:", str(e))
             print("Form submitted via POST")
