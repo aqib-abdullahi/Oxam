@@ -238,16 +238,11 @@ def student_dashboard():
         student_courses = query_functions.get_student_courses(current_user.get_identification())
         current_page = "View Exams"
         available_exams = []
-        scores = []
         for course in student_courses:
             exams = query_functions.get_user_exams(course.CourseID)
             for exam in exams:
-                exam_score = query_functions.get_exam_score(exam_id=exam.ExamID, user_id=current_user.get_identification())
-                if exam_score is not None:
-                    scores.extend(exam_score)
-            available_exams.extend(exams)
-            print(current_user.get_identification())
-        return render_template("Student-dashboard.html", exams=available_exams, current_page=current_page, scores=scores)
+                available_exams.extend(exams)
+        return render_template("Student-dashboard.html", exams=available_exams, current_page=current_page)
     else:
         # flask.abort(401)
         return redirect(url_for('signin'))
