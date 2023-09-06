@@ -50,7 +50,11 @@
                 <!-- Options for courses will be populated dynamically -->
                 <option value="">select a course</option>
                 {% for course in courses %}
+                {% if Course_id == course.CourseID%}
+                <option value="{{ course.CourseID }}" selected>{{ course.CourseCode }}: {{ course.CourseName }}</option>
+                {% else %}
                 <option value="{{ course.CourseID }}">{{ course.CourseCode }}: {{ course.CourseName }}</option>
+                {% endif %}
                 {% endfor %}
             </select><br>
             <input type="hidden" id="selected-student" name="selected-student" value="">

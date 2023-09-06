@@ -12,6 +12,7 @@ from models.user import User
 from models.student_course import StudentCourse
 from models.responses import QuestionResponse
 from models.studentlog import Studentlog
+from models.passreset import PasswordResetToken
 from dotenv import load_dotenv
 from sqlalchemy.orm import sessionmaker, scoped_session, joinedload
 import os

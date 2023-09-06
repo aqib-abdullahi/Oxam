@@ -112,6 +112,7 @@
         <h2 id="exam-list">Available Exams</h2>
         <ul class="exams">
             {% for exam in exams %}
+            {% if exam.IsAvailable %}
             <li>
                 <h3>{{ exam.Title }}</h3>
                 <p>Course: {{ exam.course.CourseCode }}</p>
@@ -119,6 +120,7 @@
                 <p>Duration: {{ exam.Duration }} minutes</p>
                 <a href="{{ url_for('exam_start_warning', exam_id=exam.ExamID) }}" class="start">Start Exam</a>
             </li>
+            {% endif %}
             {% endfor %}
         </ul>
     </div>

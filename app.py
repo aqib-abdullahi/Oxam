@@ -1,6 +1,9 @@
 #!/usr/bin/python3
 """flask app"""
 from flask import Flask, url_for, redirect, jsonify, flash, session
+from uuid import uuid4
+import smtplib
+from flask_mail import Mail, Message
 import flask
 from flask import render_template, request
 from models import storage
@@ -12,6 +15,7 @@ from models.answer import Answer
 from models.student_course import StudentCourse
 from models.result import Result
 from models.studentlog import Studentlog
+from models.passreset import PasswordResetToken
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from models.engine import query_functions
 from passlib.hash import bcrypt_sha256
@@ -26,6 +30,16 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+app.config['DEBUG']=True
+app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = "abdullahiaqib@gmail.com"
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = "abdullahiaqib@gmail.com"
+
+mail = Mail(app)
+
 @login_manager.user_loader
 def user_loader(user_id):
     return query_functions.get_user_by_email(user_id)
@@ -37,7 +51,6 @@ def add_user():
         FirstName = request.form['First name']
         LastName = request.form['Last name']
         Email = request.form['Email Address']
-        # UserName = request.form['UserName']
         Password = request.form['Password']
         Repeat_password = request.form['Repeat_password']
         Role = request.form['Role']
@@ -104,6 +117,86 @@ def signin():
 
     return render_template("Login.html", form_data=form_data, error=error)
 
+@app.route("/forgot-password", methods=['POST', 'GET'], strict_slashes=False)
+def forgot_password():
+    form_data = None
+    if request.method == 'GET':
+        return render_template("forgot-password.html", form_data=form_data)
+    else:
+        Email = request.form['Email']
+        user = query_functions.get_user_by_email(Email)
+        if user:
+            user_ID = query_functions.get_token_user(user.UserID)
+            if user_ID:
+                storage.delete(user_ID)
+                storage.save()
+
+                userid = user.UserID
+                token = str(uuid4())
+                expiration_time = datetime.utcnow() + timedelta(hours=1)
+                reset = PasswordResetToken(Token=token, UserID=userid, ExpiresAt=expiration_time)
+                storage.new(reset)
+                storage.save()
+
+                recipient = Email
+                subject = "Password Reset"
+                body = f'Click the following link to reset your password: {url_for("reset_password", reset_token=reset.Token, _external=True)}'
+                send_email(subject=subject, recipients=recipient, body=body)
+                return render_template("check-inbox.html")
+            else:
+                userid = user.UserID
+                token = str(uuid4())
+                expiration_time = datetime.utcnow() + timedelta(hours=1)
+                reset = PasswordResetToken(Token=token, UserID=userid, ExpiresAt=expiration_time)
+                storage.new(reset)
+                storage.save()
+                # try:
+                #     server = smtplib.SMTP(smtp_server, smtp_port)
+                #     server.starttls()
+                #     server.login(smtp_username, smtp_password)
+                #     server.quit()
+                #     print("SMTP server connection successful.")
+                # except smtplib.SMTPConnectError as e:
+                #     print(f"SMTP server connection failed: {e}")
+                recipient = Email
+                subject = "Password Reset"
+                body = f'Click the following link to reset your password: {url_for("reset_password", reset_token=reset.Token, _external=True)}'
+                send_email(subject=subject, recipients=recipient, body=body)
+                return render_template("check-inbox.html")
+        else:
+            flash('Email address not found. Please check and try again.', 'error')
+            return redirect(url_for('forgot_password'))
+
+def send_email(subject, recipients, body):
+    message = Message(subject=subject, recipients=[recipients], body=body)
+    mail.send(message)
+
+@app.route("/reset-password/<string:reset_token>", methods=['GET', 'POST'], strict_slashes=False)
+def reset_password(reset_token):
+    if request.method == 'GET':
+        db_token = query_functions.get_token(reset_token)
+        if db_token.Token:
+            if db_token.ExpiresAt < datetime.utcnow():
+                return render_template("Reset-password.html")
+            else:
+                flask.abort(404)
+        else:
+            return flask.abort(404)
+    else:
+        new_password = request.form['new_password']
+        confirm_password = request.form['confirm_password']
+        if new_password == confirm_password:
+            db_token = query_functions.get_token(reset_token)
+            user_id = db_token.UserID
+            user = query_functions.get_user(user_id)
+            hashed = bcrypt_sha256.hash(new_password)
+            user.Password = hashed
+            storage.save()
+            return redirect(url_for('signin'))
+        else:
+            error = "Password and Repeat Password doesn't match"
+            return render_template("Reset-password.html", error=error)
+
 @login_required
 @app.route("/dashboard", methods=['GET'], strict_slashes=False)
 def dashboard():
@@ -121,11 +214,11 @@ def dashboard():
 def student_dashboard():
     if current_user.is_authenticated and current_user.Role == 'Student':
         student_courses = query_functions.get_student_courses(current_user.get_identification())
+        current_page = "View Exams"
         available_exams = []
         for course in student_courses:
             exams = query_functions.get_user_exams(course.CourseID)
             available_exams.extend(exams)
-            current_page = "View Exams"
         return render_template("Student-dashboard.html", exams=available_exams, current_page=current_page)
     else:
         # flask.abort(401)
@@ -195,6 +288,18 @@ def view_students_results():
         # flask.abort(401)
         return redirect(url_for('signin'))
 
+@app.route("/dashboard/view-courses/exam-availability/<int:exam_id>", methods=['GET'], strict_slashes=False)
+def change_exam_availability(exam_id):
+    exam = query_functions.get_exam(exam_id)
+    if exam.IsAvailable:
+        exam.IsAvailable = False
+    else:
+        exam.IsAvailable = True
+
+    storage.save()
+    return redirect(url_for('view_courses'))
+
+
 @login_required
 @app.route('/get_exams_for_course')
 def get_exams_for_course():
@@ -202,8 +307,6 @@ def get_exams_for_course():
     exams  = query_functions.get_user_exams(course_id)
     exams_data = [{'ExamID': exam.ExamID, 'Title': exam.Title} for exam in exams]
     return jsonify({'exams': exams_data})
-
-
 
 @login_required
 @app.route("/dashboard/view-courses/delete_course/<int:course_id>", methods=['GET'], strict_slashes=False)
@@ -273,7 +376,7 @@ def create_exam(course_id=None):
             local_datetime = local_timezone.localize(local_datetime)
             utc_start_time = local_datetime.astimezone(pytz.utc)
             Duration = request.form['duration']
-            exam = Exam(CourseID=CourseID, Title=Title, StartTime=utc_start_time, Duration=Duration)
+            exam = Exam(CourseID=CourseID, Title=Title, StartTime=utc_start_time, Duration=Duration, IsAvailable=False)
             storage.new(exam)
             storage.save()
             flash('Exam successfully created', 'success')
@@ -282,16 +385,34 @@ def create_exam(course_id=None):
         # flask.abort(401)
         return redirect(url_for('signin'))
 
+@login_required
 @app.route("/dashboard/view-courses/register-students/<int:course_id>")
 def registered_students(course_id):
-    users = []
-    registered_students = query_functions.get_registered_students(course_id)
-    for student in registered_students:
-        users.append(query_functions.get_user(student.StudentID))
+    if current_user.is_authenticated and current_user.Role == 'Instructor':
+        course = query_functions.get_user_courses_courseid(course_id)
+        users = []
+        Course_id = course_id
+        print(Course_id)
+        registered_students = query_functions.get_registered_students(course_id)
+        for student in registered_students:
+            users.append(query_functions.get_user(student.StudentID))
 
-    for user in users:
-        print(user.Email)
-    return render_template("Registered-students.html", registered_students=registered_students, users=users)
+        for user in users:
+            print(user.Email)
+        return render_template("Registered-students.html", registered_students=registered_students, users=users, course=course, Course_id=Course_id)
+    else:
+        return redirect(url_for('signin'))
+
+@login_required
+@app.route("/dashboard/view-courses/view-registered-students/unregister/<int:course_id>/<int:student_id>")
+def unregister_student(course_id, student_id):
+    if current_user.is_authenticated and current_user.Role == 'Instructor':
+        student = query_functions.get_student_registered(course_id=course_id, student_id=student_id)
+        storage.delete(student)
+        storage.save()
+        return redirect(url_for('registered_students', course_id=course_id))
+    else:
+        return redirect(url_for('signin'))
 
 @login_required
 @app.route("/dashboard/view-courses/delete_exam/<int:exam_id>", methods=['GET'], strict_slashes=False)
@@ -371,9 +492,11 @@ def search_students_by_email():
         return redirect(url_for('signin'))
 
 @login_required
+@app.route("/dashboard/register_students_template/<int:course_id>", methods=['GET', 'POST'])
 @app.route("/dashboard/register_students_template", methods=['GET', 'POST'])
-def register_students_template():
+def register_students_template(course_id=None):
     if current_user.is_authenticated and current_user.Role == 'Instructor':
+        Course_id = course_id
         current_page = "Register Student"
         available_courses = query_functions.get_user_courses(current_user.get_identification())
         error = ""
@@ -383,7 +506,6 @@ def register_students_template():
 
             existing_registration = query_functions.get_student_course(StudentID, CourseID)
             if existing_registration:
-                # error =  "" #Student already registered to this course.
                 flash('Student already registered', 'error')
                 return render_template("Register_students.html", courses=available_courses, current_page=current_page)
 
@@ -393,15 +515,19 @@ def register_students_template():
             flash('Student successfully registered', 'success')
             return redirect(url_for('register_students_template', current_page=current_page))
         else:
-            return render_template("Register_students.html", courses=available_courses, current_page=current_page)
+            return render_template("Register_students.html", courses=available_courses, current_page=current_page, Course_id=Course_id)
     else:
         # flask.abort(401)
         return redirect(url_for('signin'))
 
+@login_required
 @app.route("/take_exam/<int:exam_id>/warning", strict_slashes=False)
 def exam_start_warning(exam_id):
-    exam = query_functions.get_exam(exam_id)
-    return render_template("Warning.html", exam=exam)
+    if current_user.is_authenticated and current_user.Role == 'Student':
+        exam = query_functions.get_exam(exam_id)
+        return render_template("Warning.html", exam=exam)
+    else:
+        return redirect(url_for('signin'))
 
 @login_required
 @app.route("/take_exam/<int:exam_id>", methods=['GET', 'POST'])
@@ -471,6 +597,7 @@ def take_exam(exam_id):
         else:
             return redirect(url_for('signin'))
 
+
 @app.route("/get_start_time/<int:exam_id>", methods=['GET'])
 def get_start_time(exam_id):
     exam = query_functions.get_student_exam_start_time(exam_id=exam_id, user_id=current_user.get_identification())
@@ -491,6 +618,7 @@ def exam_results():
     else:
         return redirect(url_for('signin'))
 
+@login_required
 @app.route("/take_exam/submission", strict_slashes=False)
 def thank_you():
     return redirect(url_for('student_dashboard'))
