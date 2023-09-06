@@ -12,7 +12,6 @@ class User(Base, UserMixin):
     UserID = Column(Integer, primary_key=True, autoincrement=True)
     FirstName = Column(String(50))
     LastName = Column(String(50))
-    # UserName = Column(String(50))
     Email = Column(String(100))
     Password  = Column(String(100))
     Role = Column(Enum('Student', 'Instructor', 'Admin'))
