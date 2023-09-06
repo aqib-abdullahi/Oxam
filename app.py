@@ -246,6 +246,7 @@ def student_dashboard():
                 if exam_score is not None:
                     scores.extend(exam_score)
             available_exams.extend(exams)
+            print(current_user.get_identification())
         return render_template("Student-dashboard.html", exams=available_exams, current_page=current_page, scores=scores)
     else:
         # flask.abort(401)
