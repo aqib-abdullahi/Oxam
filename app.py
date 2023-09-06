@@ -176,7 +176,8 @@ def reset_password(reset_token):
     if request.method == 'GET':
         db_token = query_functions.get_token(reset_token)
         if db_token.Token:
-            if db_token.ExpiresAt > datetime.utcnow():
+            current_time = datetime.utcnow()
+            if current_time <= db_token.ExpiresAt:
                 return render_template("Reset-password.html")
             else:
                 flask.abort(404)
