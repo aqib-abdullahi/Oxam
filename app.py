@@ -190,7 +190,6 @@ def reset_password(reset_token):
             db_token = query_functions.get_token(reset_token)
             user_id = db_token.UserID
             session = storage.get_session()
-            session.begin()
             user = query_functions.get_user(user_id)
             hashed = bcrypt_sha256.hash(new_password)
             print(hashed)
