@@ -196,6 +196,7 @@ def reset_password(reset_token):
                 storage.save()
             except Exception as e:
                 print("Error:", str(e))
+            print("Form submitted via POST")
             return redirect(url_for('signin'))
         else:
             error = "Password and Repeat Password doesn't match"
