@@ -21,7 +21,7 @@ def get_user_by_email(email):
 def get_user(user_id):
     session = storage.get_session()
     user = session.query(User).get(user_id)
-    session.close()
+    # session.close()
     return user
 
 def get_all_user_by_email(email):
@@ -177,7 +177,7 @@ def get_student_registered(student_id, course_id):
 def get_token(Token):
     session = storage.get_session()
     token = session.query(PasswordResetToken).filter_by(Token = Token).first()
-    session.close()
+    # session.close()
     if token:
         return token
     else:

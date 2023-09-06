@@ -199,6 +199,7 @@ def reset_password(reset_token):
                 storage.save()
                 storage.close()
             except Exception as e:
+                session.rollback()
                 print("Error:", str(e))
             print("Form submitted via POST")
             print(user.Password)
