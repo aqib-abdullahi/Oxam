@@ -244,9 +244,9 @@ def student_dashboard():
             for exam in exams:
                 exam_score = query_functions.get_exam_score(exam_id=exam.ExamID, user_id=current_user.get_identification())
                 scores.append(exam_score)
-                for score in scores:
-                    print(score.ExamID)
             available_exams.extend(exams)
+            for score in scores:
+                print(score.ExamID)
         return render_template("Student-dashboard.html", exams=available_exams, current_page=current_page, scores=scores)
     else:
         # flask.abort(401)
