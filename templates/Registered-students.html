@@ -112,9 +112,9 @@
                 <td>{{ user.LastName }}</td>
                 <td>{{ user.Email }}</td>
                 <td><a href="/dashboard/view-courses/view-registered-students/unregister/{{ course.CourseID }}/{{ user.UserID }}">Delete</a></td>
+            {% endfor %}<br>
             </tbody>
         </table>
-        {% endfor %}
         <div class="add">
             <a href="/dashboard/register_students_template/{{ Course_id }}">Add student</a>
         </div>
