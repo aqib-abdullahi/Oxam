@@ -25,7 +25,7 @@ platformdirs==3.10.0
 ptyprocess==0.7.0
 python-dotenv
 pytz==2023.3
-sh==2.0.4
+sh
 SQLAlchemy==2.0.20
 typing_extensions==4.7.1
 virtualenv==20.24.2
