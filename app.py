@@ -101,9 +101,14 @@ def signin():
             hashed_password_from_db = query_functions.get_hashed_password(Email)
             validity = bcrypt_sha256.verify(Password, hashed_password_from_db)
             if validity:
+                session = storage.get_session()
                 user.authenticated = True
-                storage.new(user)
-                storage.save()
+                try:
+                    storage.new(user)
+                    storage.save()
+                except Exception as e:
+                    session.rollback()
+                    session.close()
                 login_user(user, remember=False)
                 return redirect(url_for('dashboard'))
             else:
@@ -132,15 +137,25 @@ def forgot_password():
         if user:
             user_ID = query_functions.get_token_user(user.UserID)
             if user_ID:
-                storage.delete(user_ID)
-                storage.save()
+                session = storage.get_session()
+                try:
+                    storage.delete(user_ID)
+                    storage.save()
+                except Exception as e:
+                    session.rollback()
+                    session.close()
 
                 userid = user.UserID
                 token = str(uuid4())
                 expiration_time = datetime.utcnow() + timedelta(hours=1)
-                reset = PasswordResetToken(Token=token, UserID=userid, ExpiresAt=expiration_time)
-                storage.new(reset)
-                storage.save()
+                session = storage.get_session()
+                try:
+                    reset = PasswordResetToken(Token=token, UserID=userid, ExpiresAt=expiration_time)
+                    storage.new(reset)
+                    storage.save()
+                except Exception as e:
+                    session.rollback()
+                    session.close()
 
                 recipient = Email
                 subject = "Password Reset"
@@ -151,9 +166,14 @@ def forgot_password():
                 userid = user.UserID
                 token = str(uuid4())
                 expiration_time = datetime.utcnow() + timedelta(hours=1)
-                reset = PasswordResetToken(Token=token, UserID=userid, ExpiresAt=expiration_time)
-                storage.new(reset)
-                storage.save()
+                session = storage.get_session()
+                try:
+                    reset = PasswordResetToken(Token=token, UserID=userid, ExpiresAt=expiration_time)
+                    storage.new(reset)
+                    storage.save()
+                except Exception as e:
+                    session.rollback()
+                    session.close()
 
                 recipient = Email
                 subject = "Password Reset"
@@ -189,7 +209,6 @@ def reset_password(reset_token):
             session = storage.get_session()
             user = query_functions.get_user(user_id)
             hashed = bcrypt_sha256.hash(new_password)
-            print(hashed)
             user.Password = hashed
             try:
                 storage.save()
@@ -237,8 +256,13 @@ def logout():
     if current_user.is_authenticated:
         user = current_user
         user.authenticated = False
-        storage.new(user)
-        storage.save()
+        session = storage.get_session()
+        try:
+            storage.new(user)
+            storage.save()
+        except Exception as e:
+            session.rollback()
+            session.close()
         logout_user()
         return redirect(url_for('signin'))
 
@@ -253,10 +277,16 @@ def create_course_form():
             course_code = request.form['course_code']
             course_name = request.form['course_name']
             course_description = request.form['course_description']
-            course = Course(CourseCode=course_code, InstructorID=current_user.get_identification(),
-                            CourseName=course_name, Description=course_description)
-            storage.new(course)
-            storage.save()
+            session = storage.get_session()
+            try:
+                course = Course(CourseCode=course_code, InstructorID=current_user.get_identification(),
+                                CourseName=course_name, Description=course_description)
+                storage.new(course)
+                storage.save()
+            except Exception as e:
+                session.rollback()
+                session.close()
+                return redirect(url_for('create_course_form'))
             flash('Course successfully created', 'success')
             return redirect(url_for('view_courses'))
 
@@ -295,6 +325,7 @@ def view_students_results():
         # flask.abort(401)
         return redirect(url_for('signin'))
 
+@login_required
 @app.route("/dashboard/view-courses/exam-availability/<int:exam_id>", methods=['GET'], strict_slashes=False)
 def change_exam_availability(exam_id):
     exam = query_functions.get_exam(exam_id)
@@ -302,8 +333,12 @@ def change_exam_availability(exam_id):
         exam.IsAvailable = False
     else:
         exam.IsAvailable = True
-
-    storage.save()
+    session = storage.get_session()
+    try:
+        storage.save()
+    except Exception as e:
+        session.rollback()
+        storage.close()
     return redirect(url_for('view_courses'))
 
 
@@ -321,8 +356,14 @@ def delete_course(course_id):
     if current_user.is_authenticated and current_user.Role == 'Instructor':
         course_to_delete = query_functions.get_course(course_id)
         if course_to_delete:
-            storage.delete(course_to_delete)
-            storage.save()
+            session = storage.get_session()
+            try:
+                storage.delete(course_to_delete)
+                storage.save()
+            except Exception as e:
+                session.rollback()
+                session.close()
+                return redirect(url_for('view_courses'))
             flash('Course successfully deleted', 'success')
             return redirect(url_for('view_courses'))
 
@@ -351,8 +392,14 @@ def delete_question(question_id, exam_id):
         questions = query_functions.get_questions(exam_id)
         current_page = "View courses"
         if question:
-            storage.delete(question)
-            storage.save()
+            session = storage.get_session()
+            try:
+                storage.delete(question)
+                storage.save()
+            except Exception as e:
+                session.rollback()
+                session.close()
+                return redirect(url_for('view_courses'))
             flash('Question deleted successfully', 'success')
             return redirect(url_for('view_questions', questions=questions, exam_id=exam_id, current_page=current_page))
         else:
@@ -386,9 +433,15 @@ def create_exam(course_id=None):
             local_datetime = local_timezone.localize(local_datetime)
             utc_start_time = local_datetime.astimezone(pytz.utc)
             Duration = request.form['duration']
-            exam = Exam(CourseID=CourseID, Title=Title, StartTime=utc_start_time, Duration=Duration, IsAvailable=False)
-            storage.new(exam)
-            storage.save()
+            session = storage.get_session()
+            try:
+                exam = Exam(CourseID=CourseID, Title=Title, StartTime=utc_start_time, Duration=Duration, IsAvailable=False)
+                storage.new(exam)
+                storage.save()
+            except Exception as e:
+                session.rollback()
+                session.close()
+                return redirect(url_for('create_exam'))
             flash('Exam successfully created', 'success')
             return redirect(url_for('view_courses'))
     else:
@@ -418,9 +471,15 @@ def registered_students(course_id):
 @app.route("/dashboard/view-courses/view-registered-students/unregister/<int:course_id>/<int:student_id>")
 def unregister_student(course_id, student_id):
     if current_user.is_authenticated and current_user.Role == 'Instructor':
-        student = query_functions.get_student_registered(course_id=course_id, student_id=student_id)
-        storage.delete(student)
-        storage.save()
+        session =storage.get_session()
+        try:
+            student = query_functions.get_student_registered(course_id=course_id, student_id=student_id)
+            storage.delete(student)
+            storage.save()
+        except Exception as e:
+            session.rollback()
+            session.close()
+            return redirect(url_for('registered_students', course_id=course_id))
         return redirect(url_for('registered_students', course_id=course_id))
     else:
         return redirect(url_for('signin'))
@@ -431,8 +490,14 @@ def delete_exam(exam_id):
     if current_user.is_authenticated and current_user.Role == 'Instructor':
         exam_to_delete = query_functions.get_exam(exam_id)
         if exam_to_delete:
-            storage.delete(exam_to_delete)
-            storage.save()
+            session = storage.get_session()
+            try:
+                storage.delete(exam_to_delete)
+                storage.save()
+            except Exception as e:
+                session.rollback()
+                session.close()
+                return redirect(url_for('view_courses'))
             flash('Exam successfully deleted', 'success')
         return redirect(url_for('view_courses'))
     else:
@@ -473,9 +538,14 @@ def add_question(exam_id=None):
                                 AnswerText=option_text,
                                 CorrectAnswer=correct_answer)
                 question.answers.append(answer)
-
-            storage.new(question)
-            storage.save()
+            session = storage.get_session()
+            try:
+                storage.new(question)
+                storage.save()
+            except Exception as e:
+                session.rollback()
+                session.close()
+                return redirect(url_for('add_question'))
             flash('Question successfully created', 'success')
             return redirect(url_for('add_question', current_page=current_page))
 
@@ -521,9 +591,15 @@ def register_students_template(course_id=None):
                 flash('Student already registered', 'error')
                 return render_template("Register_students.html", courses=available_courses, current_page=current_page)
 
-            studentcourse = StudentCourse(StudentID=StudentID, CourseID=CourseID)
-            storage.new(studentcourse)
-            storage.save()
+            session = storage.get_session()
+            try:
+                studentcourse = StudentCourse(StudentID=StudentID, CourseID=CourseID)
+                storage.new(studentcourse)
+                storage.save()
+            except Exception as e:
+                session.rollback()
+                session.close()
+                return redirect(url_for('register_students_template'))
             flash('Student successfully registered', 'success')
             return redirect(url_for('register_students_template', current_page=current_page))
         else:
@@ -603,10 +679,16 @@ def take_exam(exam_id):
                     correct_count += 1
 
             score_percentage = (correct_count / total_questions) * 100
-            result = Result(ExamID=exam_id, UserID=current_user.get_identification(),
-                            score=score_percentage, Timestamp=datetime.now())
-            storage.new(result)
-            storage.save()
+            session = storage.get_session()
+            try:
+                result = Result(ExamID=exam_id, UserID=current_user.get_identification(),
+                                score=score_percentage, Timestamp=datetime.now())
+                storage.new(result)
+                storage.save()
+            except Exception as e:
+                session.rollback()
+                session.close()
+                return redirect(url_for('take_exam', exam_id=exam_id))
 
             return redirect(url_for('thank_you'))
         else:
