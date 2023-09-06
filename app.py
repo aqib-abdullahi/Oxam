@@ -243,6 +243,7 @@ def student_dashboard():
             exams = query_functions.get_user_exams(course.CourseID)
             for exam in exams:
                 exam_score = query_functions.get_exam_score(exam_id=exam.ExamID, user_id=current_user.get_identification())
+                print(exam_score.ExamID)
                 scores.append(exam_score)
             available_exams.extend(exams)
             for score in scores:
