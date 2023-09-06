@@ -122,7 +122,11 @@
 
 <body>
     <div class="container">
-
+        {% if error %}
+        <div class="error">
+            {{ error }}
+        </div>
+        {% endif %}
         <form action="{{ url_for('signin') }}" method="post">
             <input type="text" placeholder="Email Address" value="{{ form_data['Email'] }}" name="Email" class="input-field"><br>
             <input type="password" placeholder="Password" name="Password" class="input-field"><br>

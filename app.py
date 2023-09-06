@@ -79,8 +79,12 @@ def add_user():
         else:
             user = User(FirstName=FirstName, LastName=LastName, Email=Email,
                         Password=hashed_password, Role=Role, authenticated=False)
+            session = storage.get_session()
             storage.new(user)
-            storage.save()
+            try:
+                storage.save()
+            except Exception as e:
+                session.rollback()
             return redirect(url_for('signin'))
     return render_template("Signup.html", error=None, form_data={})
 
@@ -150,14 +154,7 @@ def forgot_password():
                 reset = PasswordResetToken(Token=token, UserID=userid, ExpiresAt=expiration_time)
                 storage.new(reset)
                 storage.save()
-                # try:
-                #     server = smtplib.SMTP(smtp_server, smtp_port)
-                #     server.starttls()
-                #     server.login(smtp_username, smtp_password)
-                #     server.quit()
-                #     print("SMTP server connection successful.")
-                # except smtplib.SMTPConnectError as e:
-                #     print(f"SMTP server connection failed: {e}")
+
                 recipient = Email
                 subject = "Password Reset"
                 body = f'Click the following link to reset your password: {url_for("reset_password", reset_token=reset.Token, _external=True)}'
@@ -199,9 +196,6 @@ def reset_password(reset_token):
                 storage.close()
             except Exception as e:
                 session.rollback()
-                print("Error:", str(e))
-            print("Form submitted via POST")
-            print(user.Password)
             return redirect(url_for('signin'))
         else:
             error = "Password and Repeat Password doesn't match"
