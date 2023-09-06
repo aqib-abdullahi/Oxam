@@ -26,7 +26,8 @@ class User(Base, UserMixin):
     reset_tokens = relationship("PasswordResetToken", back_populates="userpass")
 
 
-    def __init__(self, FirstName, LastName, Email, Password, Role, authenticated):
+    def __init__(self, FirstName, LastName, Email, Password, Role, authenticated, UserID):
+        self.UserID = UserID
         self.FirstName = FirstName
         self.LastName = LastName
         self.Email = Email
