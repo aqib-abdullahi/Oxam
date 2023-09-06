@@ -178,7 +178,7 @@ def reset_password(reset_token):
         if db_token.Token:
             current_time = datetime.utcnow()
             if current_time <= db_token.ExpiresAt:
-                return render_template("Reset-password.html")
+                return render_template("Reset-password.html", reset_token=reset_token)
             else:
                 flask.abort(404)
         else:
@@ -196,7 +196,7 @@ def reset_password(reset_token):
             return redirect(url_for('signin'))
         else:
             error = "Password and Repeat Password doesn't match"
-            return render_template("Reset-password.html", error=error)
+            return render_template("Reset-password.html", error=error,reset_token=reset_token)
 
 @login_required
 @app.route("/dashboard", methods=['GET'], strict_slashes=False)
