@@ -210,7 +210,6 @@ def dashboard():
         elif current_user.Role == 'Student':
             return redirect(url_for('student_dashboard'))
 
-    # return flask.abort(401)
     return redirect(url_for('signin'))
 
 @login_required
@@ -220,10 +219,14 @@ def student_dashboard():
         student_courses = query_functions.get_student_courses(current_user.get_identification())
         current_page = "View Exams"
         available_exams = []
+        scores = []
         for course in student_courses:
             exams = query_functions.get_user_exams(course.CourseID)
+            for exam in exams:
+                exam_score = query_functions.get_exam_score(exam_id=exam.ExamID, user_id=current_user.get_identification())
+                scores.extend(exam_score)
             available_exams.extend(exams)
-        return render_template("Student-dashboard.html", exams=available_exams, current_page=current_page)
+        return render_template("Student-dashboard.html", exams=available_exams, current_page=current_page, scores=scores)
     else:
         # flask.abort(401)
         return redirect(url_for('signin'))
@@ -335,7 +338,8 @@ def view_questions(exam_id):
         questionid = query_functions.get_exam(exam_id)
         questionid = questionid.ExamID
         current_page = "View courses"
-        return render_template("Created-questions.html", questions=questions, questionid=questionid, current_page=current_page)
+        return render_template("Created-questions.html", questions=questions, questionid=questionid,
+                               current_page=current_page)
     else:
         return redirect(url_for('signin'))
 
@@ -368,9 +372,11 @@ def create_exam(course_id=None):
             course_exam = None
             if course_id:
                 course_exam = query_functions.get_course(course_id)
-                return render_template("create_exam.html", available_courses=available_courses, course_exam=course_exam, current_page=current_page)
+                return render_template("create_exam.html", available_courses=available_courses, course_exam=course_exam,
+                                       current_page=current_page)
 
-            return render_template("create_exam.html", available_courses=available_courses, course_exam=course_exam, current_page=current_page)
+            return render_template("create_exam.html", available_courses=available_courses, course_exam=course_exam,
+                                   current_page=current_page)
         elif request.method == 'POST':
             CourseID = request.form['selected-course-id']
             Title = request.form['exam_title']
@@ -403,7 +409,8 @@ def registered_students(course_id):
 
         for user in users:
             print(user.Email)
-        return render_template("Registered-students.html", registered_students=registered_students, users=users, course=course, Course_id=Course_id)
+        return render_template("Registered-students.html", registered_students=registered_students, users=users,
+                               course=course, Course_id=Course_id)
     else:
         return redirect(url_for('signin'))
 
@@ -473,7 +480,8 @@ def add_question(exam_id=None):
             return redirect(url_for('add_question', current_page=current_page))
 
         examination_id = exam_id
-        return render_template("Questions_template.html", exams=exams, courses=courses, examination_id=examination_id, current_page=current_page)
+        return render_template("Questions_template.html", exams=exams, courses=courses, examination_id=examination_id,
+                               current_page=current_page)
     else:
         # flask.abort(401)
         return redirect(url_for('signin'))
@@ -519,7 +527,8 @@ def register_students_template(course_id=None):
             flash('Student successfully registered', 'success')
             return redirect(url_for('register_students_template', current_page=current_page))
         else:
-            return render_template("Register_students.html", courses=available_courses, current_page=current_page, Course_id=Course_id)
+            return render_template("Register_students.html", courses=available_courses, current_page=current_page,
+                                   Course_id=Course_id)
     else:
         # flask.abort(401)
         return redirect(url_for('signin'))
@@ -552,12 +561,14 @@ def take_exam(exam_id):
                     total_questions = len(questions)
                     question_index = int(0)
                     if current_time >= exam.StartTime:
-                        student_start_time = query_functions.get_student_exam_start_time(user_id=current_user.get_identification(), exam_id=examId)
+                        student_start_time = query_functions.get_student_exam_start_time(user_id=current_user.get_identification(),
+                                                                                         exam_id=examId)
                         if student_start_time:
                             return render_template("Take-exam.html", questions=questions, question_index=question_index,
                                                    exam_duration=exam_duration, examId=examId)
                         else:
-                            studentlog = Studentlog(ExamID=exam.ExamID, ExamStartedAt=datetime.utcnow(), UserID=current_user.get_identification())
+                            studentlog = Studentlog(ExamID=exam.ExamID, ExamStartedAt=datetime.utcnow(),
+                                                    UserID=current_user.get_identification())
                             storage.new(studentlog)
                             storage.save()
                             return render_template("Take-exam.html", questions=questions, question_index=question_index,

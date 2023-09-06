@@ -2,8 +2,7 @@
 <html>
 
 <head>
-    <title>Instructor Dashboard</title>
-    <!-- <link rel="stylesheet" href="style.css"> -->
+    <title>Register Students</title>
 
 </head>
 
@@ -47,7 +46,6 @@
 
             <label for="course-select">Select Course:</label>
             <select id="course-select" name="course_id" required>
-                <!-- Options for courses will be populated dynamically -->
                 <option value="">select a course</option>
                 {% for course in courses %}
                 {% if Course_id == course.CourseID%}

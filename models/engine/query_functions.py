@@ -27,7 +27,6 @@ def get_user(user_id):
 def get_all_user_by_email(email):
     session = storage.get_session()
     users = session.query(User).filter(User.Email == email, User.Role == 'Student').all()
-    # print(users.Email)
     session.close()
     return users
 
@@ -60,10 +59,6 @@ def get_all_exams_for_instructor(instructor_id):
     session.close()
     return exams
 
-# def search_students_by_email(search_email):
-#     session = storage.get_session()
-
-
 def get_course(course_id):
     session = storage.get_session()
     course = session.query(Course).filter_by(CourseID = course_id).first()
@@ -86,12 +81,6 @@ def get_exam(exam_id):
     exam = session.query(Exam).filter_by(ExamID = exam_id).first()
     # session.close()
     return exam
-
-# def get_user_by_email(email):
-#     session = storage.get_session()
-#     user = session.query(User).filter(User.Email == email).first()
-#     session.close()
-#     return user
 
 def get_hashed_password(Email):
     session = storage.get_session()
@@ -188,3 +177,9 @@ def get_token_user(user_id):
     token = session.query(PasswordResetToken).filter_by(UserID = user_id).first()
     session.close()
     return token
+
+def get_exam_score(exam_id, user_id):
+    session = storage.get_session()
+    exam_results = session.query(Result).filter_by(ExamID=exam_id, UserID=user_id).first()
+    session.close()
+    return exam_results
