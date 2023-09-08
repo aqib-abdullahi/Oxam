@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <title>Oxam - Online Examination Platform</title>
+</head>
+
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">
+                <a href="#">Oxam</a>
+            </div>
+            <button class="menu-button" id="menuButton">
+                <i class="fa-solid fa-bars fa-2xl"></i>
+            </button>
+            <div class="ul-links">
+                <ul class="nav-links">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Login</a></li>
+                    <li><a href="#about" id="aboutlink">About</a></li>
+                </ul>
+            </div>
+            <div class="ul-link">
+                <button class="menubutton" id="menuButton2">
+                    <i class="fa-solid fa-xmark fa-2xl"></i>
+                </button>
+                <ul class="nav-links">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Login</a></li>
+                    <li><a href="#about" id="aboutlink2">About</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="cover"></div>
+        <div class="hero-content">
+            <h1>Welcome to Oxam</h1>
+            <p>Your trusted platform for online examinations</p>
+            <a href="{{ url_for('Signup') }}" class="get-started">GET STARTED AS A STUDENT</a>
+            <a href="{{ url_for('Signup') }}" class="get-started">GET STARTED AS AN ADMIN</a>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="feature">
+            <h1>Features</h1>
+            <h2>Easy to Use</h2>
+            <div class="easy-image"></div>
+            <p>User-friendly and straight foward interface for both students and administrators. For students, this means straightforward access to their enrolled courses and available exams, while instructors can efficiently manage courses and exams.</p>
+        </div>
+        <div class="feature">
+            <h2>Secure</h2>
+            <div class="secure-image"></div>
+            <div class="secure-image2"></div>
+            <p>Robust security measures to protect exam data and user information. Role-based access control ensures that users, including students and instructors, only have access to the specific features and data that are relevant to their roles.</p>
+        </div>
+        <div class="feature">
+            <h2>Exam Availability Control</h2>
+            <div class="availability-image"></div>
+            <p>Students can only access exams that have reached their start times, preventing premature access. This feature adds a layer of time-based access control, ensuring a fair and organized examination process.</p>
+        </div>
+    </section>
+    <section class="about">
+        <h2>About</h2>
+        <p>This is a project inspired by the unending spiral of the manual marking and grading of students in an institutional setting. The errors committed by either examiners and others that partake in processing of results has been cut. Oxam web application
+            is designed with a primary focus on user-friendliness. We understand that both students and administrators need an intuitive and straightforward interface to streamline their tasks and enhance their experience. This is also a Portfolio Project
+            for Holberton School.</p>
+        <a href="https://github.com/aqib-abdullahi" target="_blank">My Github Profile</a>
+        <a href="https://www.linkedin.com/in/aqib-abdullahi/" target="_blank">My LinkedIn </a>
+        <a href="https://twitter.com/aqibabdullahi" target="_blank">My Twitter Profile</a><br><br><br><br>
+        <a href="https://github.com/aqib-abdullahi/Oxam" target="_blank">Link to Repository </a>
+    </section>
+
+    <section class="footer">
+        <footer class="footer">
+            <p>&copy; 2023 Oxam. All rights reserved.</p>
+        </footer>
+    </section>
+</body>
+<style>
+    body,
+    h1,
+    h2,
+    p,
+    ul,
+    li {
+        margin: 0;
+        padding: 0;
+        font-size: 1rem;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    body {
+        background-size: cover;
+        background-position: center;
+    }
+    
+    .features h1 {
+        font-size: 2.7rem;
+    }
+    
+    .about {
+        background-color: #333;
+        color: #fff;
+        height: auto;
+        padding: 30px;
+        text-align: center;
+    }
+    
+    .about h2 {
+        font-size: 3rem;
+        margin-bottom: 40px;
+    }
+    
+    .menu-button {
+        background-color: transparent;
+        cursor: pointer;
+        border: none;
+    }
+    
+    .about p {
+        font-size: 1.3rem;
+        line-height: 2.5rem;
+        padding-bottom: 50px;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    
+    .about a {
+        display: inline-block;
+        padding: 15px 30px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        font-size: 1.2rem;
+        letter-spacing: 1px;
+        border-radius: 5px;
+        margin-right: 10px;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .easy-image {
+        background-image: url('{{ easy_nav }}');
+        width: 90vw;
+        max-width: 1000px;
+        height: 50vh;
+        max-height: 750px;
+        align-self: center;
+        margin: 0 auto;
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    
+    .menubutton {
+        width: 30px;
+        height: 30px;
+        margin-left: 85vw;
+        margin-top: 0;
+        background-color: transparent;
+        cursor: pointer;
+        border: none;
+    }
+    
+    .secure-image {
+        background-image: url('{{ RBAC }}');
+        width: 90vw;
+        max-width: 1000px;
+        height: 50vh;
+        max-height: 750px;
+        align-self: center;
+        margin: 0 auto;
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        margin-bottom: 15px;
+    }
+    
+    .secure-image2 {
+        background-image: url('{{ RBAC2 }}');
+        width: 90vw;
+        max-width: 1000px;
+        height: 50vh;
+        max-height: 750px;
+        align-self: center;
+        margin: 0 auto;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    
+    .availability-image {
+        background-image: url('{{ availability }}');
+        width: 90vw;
+        max-width: 1000px;
+        height: 50vh;
+        max-height: 750px;
+        align-self: center;
+        margin: 0 auto;
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    
+    .header {
+        background-color: #fff;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 100;
+    }
+    
+    .nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+    }
+    
+    .logo a {
+        font-size: 24px;
+        font-weight: bold;
+        text-decoration: none;
+        font-size: 2rem;
+        color: #007bff;
+    }
+    
+    .ul-link {
+        list-style: none;
+        display: flex;
+        position: absolute;
+        left: 5000px;
+        flex-direction: column;
+        background-color: #fff;
+        height: 100vh;
+        text-align: center;
+        padding-bottom: 0;
+        top: 0;
+        padding-top: 10%;
+        font-size: 2rem;
+        width: 100vw;
+        transition: all .5s;
+    }
+    
+    .show {
+        left: 0;
+        position: fixed;
+        font-weight: 800;
+    }
+    
+    .ul-links {
+        display: none;
+    }
+    
+    .ul-link .nav-links li {
+        margin: 40px 0;
+        list-style: none;
+    }
+    
+    .nav-links li {
+        margin-right: 20px;
+    }
+    
+    .nav-links a {
+        text-decoration: none;
+        color: #333;
+    }
+    
+    .hero {
+        background-image: url('{{ background }}');
+        background-position: center;
+        background-size: cover;
+        height: 100vh;
+        background-size: cover;
+    }
+    
+    .cover::after {
+        background-color: #fff;
+        content: "";
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        opacity: .7;
+        top: 0;
+        z-index: 2;
+    }
+    
+    .hero-content {
+        max-width: 800px;
+        margin: 0 auto;
+        position: absolute;
+        top: 20%;
+        left: 10%;
+        right: 10%;
+        text-align: center;
+        z-index: 2;
+    }
+    
+    .hero-content a {
+        margin-top: 15px;
+    }
+    
+    .hero-content p {
+        font-weight: 900;
+        color: #2a3342;
+    }
+    
+    .hero h1 {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        margin-top: 10px;
+        font-weight: 900;
+        color: #2a3342;
+    }
+    
+    .hero p {
+        font-size: 18px;
+        margin-bottom: 30px;
+        color: #2a3342;
+    }
+    
+    .get-started {
+        display: inline-block;
+        padding: 15px 30px;
+        background-color: #2a3342;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-right: 10px;
+        font-weight: bold;
+    }
+    
+    .features {
+        display: flex;
+        justify-content: space-around;
+        background-color: #fff;
+        padding: 0px 0px;
+        margin: 0 10px;
+        flex-direction: column;
+    }
+    
+    .feature {
+        text-align: center;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px 0;
+    }
+    
+    .feature h2 {
+        font-size: 2rem;
+        margin-top: 1rem;
+        margin-bottom: 20px;
+        color: #007bff;
+    }
+    
+    .feature p {
+        font-size: 1.3rem;
+        padding-bottom: 1rem;
+        margin-bottom: 0%;
+    }
+    
+    .footer {
+        color: #333;
+        text-align: center;
+        padding: 20px 0;
+        width: 100%;
+        height: auto;
+    }
+    
+    @media screen and (min-width: 768px) {
+        .ul-link {
+            display: none;
+        }
+        .ul-links {
+            flex-direction: row;
+            display: block;
+        }
+        .ul-links .nav-links li {
+            margin: 10px 0;
+            list-style: none;
+        }
+        .menu-button {
+            display: none;
+        }
+        .nav-links li {
+            margin: 0 20px;
+            padding: 0 30px;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+        }
+        .ul-links .nav-links {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    }
+</style>
+<script src="app.js"></script>
+<script src="https://kit.fontawesome.com/0f3c732ecf.js" crossorigin="anonymous"></script>
+<script>
+    const closeDropDown = document.getElementById("menuButton2")
+    const dropDownButton = document.querySelector(".menu-button")
+    const dropContent = document.querySelector(".ul-link")
+    const aboutSection = document.querySelector(".about");
+
+    dropDownButton.addEventListener("click", function() {
+        console.log("clicked")
+        dropContent.classList.add('show')
+    })
+
+    closeDropDown.addEventListener("click", function() {
+        console.log("clicked")
+        dropContent.classList.remove('show')
+    })
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const nav = document.querySelector(".nav")
+        let aboutSectionOffset = aboutSection.offsetTop;
+
+        document.getElementById('aboutlink').addEventListener('click', function(e) {
+            function scrollToAboutSection() {
+                window.scrollTo({
+                    top: aboutSectionOffset - nav.offsetHeight,
+                    behavior: "smooth"
+                });
+            }
+            scrollToAboutSection();
+        });
+
+        document.getElementById('aboutlink2').addEventListener('click', function(e) {
+            if (dropContent.classList.contains('show')) {
+                dropContent.classList.remove('show')
+                let aboutSectionOffset = aboutSection.offsetTop;
+
+                function scrollToAboutSection() {
+                    window.scrollTo({
+                        top: aboutSectionOffset - nav.offsetHeight,
+                        behavior: "smooth"
+                    });
+                }
+                scrollToAboutSection();
+            }
+        });
+    });
+</script>
+
+</html>

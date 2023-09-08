@@ -44,6 +44,15 @@ mail = Mail(app)
 def user_loader(user_id):
     return query_functions.get_user_by_email(user_id)
 
+@app.route("/", strict_slashes=False)
+def home():
+    easy_nav = "./static/images/easy.png"
+    RBAC = "./static/images/RBAC.png"
+    RBAC2 = "./static/images/exam_availability_1.png"
+    availability = "./static/images/RBAC.png"
+    background = "./static/background.jpg"
+    return render_template("index.html", easy_nav=easy_nav, RBAC=RBAC, RBAC2=RBAC2, availability=availability, background=background)
+
 @app.route("/Signup", methods = ['GET', 'POST'], strict_slashes=False)
 def add_user():
     Repeat_password = None
@@ -68,6 +77,7 @@ def add_user():
             }
             return render_template("Signup.html", error=error, form_data=form_data)
         elif Repeat_password != Password :
+            session = storage.get_session()
             error = "Password and repeat password doesn't match"
             form_data = {
                 'FirstName': FirstName,
@@ -75,13 +85,15 @@ def add_user():
                 'Email': Email,
                 'Role': Role
             }
+            session.rollback()
+            session.close()
             return render_template("Signup.html", error=error, form_data=form_data)
         else:
             user = User(FirstName=FirstName, LastName=LastName, Email=Email,
                         Password=hashed_password, Role=Role, authenticated=False)
             session = storage.get_session()
-            storage.new(user)
             try:
+                storage.new(user)
                 storage.save()
             except Exception as e:
                 session.rollback()
@@ -113,15 +125,19 @@ def signin():
                 return redirect(url_for('dashboard'))
             else:
                 error = "Invalid email or password!"
+                session = storage.get_session()
                 form_data = {
                     'Email' : Email
                 }
+                session.rollback()
                 return render_template("Login.html", form_data=form_data, error=error)
         else:
+            session = storage.get_session()
             error = "Invalid email or password!"
             form_data = {
                 'Email': Email
             }
+            session.rollback()
             return render_template("Login.html", form_data=form_data, error=error)
 
     return render_template("Login.html", form_data=form_data, error=error)
@@ -132,12 +148,12 @@ def forgot_password():
     if request.method == 'GET':
         return render_template("forgot-password.html", form_data=form_data)
     else:
+        session = storage.get_session()
         Email = request.form['Email']
         user = query_functions.get_user_by_email(Email)
         if user:
             user_ID = query_functions.get_token_user(user.UserID)
             if user_ID:
-                session = storage.get_session()
                 try:
                     storage.delete(user_ID)
                     storage.save()
@@ -148,7 +164,7 @@ def forgot_password():
                 userid = user.UserID
                 token = str(uuid4())
                 expiration_time = datetime.utcnow() + timedelta(hours=1)
-                session = storage.get_session()
+                # session = storage.get_session()
                 try:
                     reset = PasswordResetToken(Token=token, UserID=userid, ExpiresAt=expiration_time)
                     storage.new(reset)
@@ -166,7 +182,7 @@ def forgot_password():
                 userid = user.UserID
                 token = str(uuid4())
                 expiration_time = datetime.utcnow() + timedelta(hours=1)
-                session = storage.get_session()
+                # session = storage.get_session()
                 try:
                     reset = PasswordResetToken(Token=token, UserID=userid, ExpiresAt=expiration_time)
                     storage.new(reset)
@@ -181,6 +197,7 @@ def forgot_password():
                 send_email(subject=subject, recipients=recipient, body=body)
                 return render_template("check-inbox.html")
         else:
+            session.rollback()
             flash('Email address not found. Please check and try again.', 'error')
             return redirect(url_for('forgot_password'))
 
@@ -215,6 +232,7 @@ def reset_password(reset_token):
                 storage.close()
             except Exception as e:
                 session.rollback()
+                session.close()
             return redirect(url_for('signin'))
         else:
             error = "Password and Repeat Password doesn't match"
@@ -335,7 +353,7 @@ def change_exam_availability(exam_id):
         storage.save()
     except Exception as e:
         session.rollback()
-        storage.close()
+        session.close()
     return redirect(url_for('view_courses'))
 
 
