@@ -14,15 +14,15 @@
     <header class="header">
         <nav class="nav">
             <div class="logo">
-                <a href="#">Oxam</a>
+                <a href="{{ url_for('home') }}">Oxam</a>
             </div>
             <button class="menu-button" id="menuButton">
                 <i class="fa-solid fa-bars fa-2xl"></i>
             </button>
             <div class="ul-links">
                 <ul class="nav-links">
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">Login</a></li>
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('signin') }}">Login</a></li>
                     <li><a href="#about" id="aboutlink">About</a></li>
                 </ul>
             </div>
@@ -31,8 +31,8 @@
                     <i class="fa-solid fa-xmark fa-2xl"></i>
                 </button>
                 <ul class="nav-links">
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">Login</a></li>
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('signin') }}">Login</a></li>
                     <li><a href="#about" id="aboutlink2">About</a></li>
                 </ul>
             </div>
@@ -149,7 +149,7 @@
     }
     
     .easy-image {
-        background-image: url('{{ easy_nav }}');
+        background-image: url('images/easy.png');
         width: 90vw;
         max-width: 1000px;
         height: 50vh;
@@ -172,7 +172,7 @@
     }
     
     .secure-image {
-        background-image: url('{{ RBAC }}');
+        background-image: url('images/RBAC.png');
         width: 90vw;
         max-width: 1000px;
         height: 50vh;
@@ -186,7 +186,7 @@
     }
     
     .secure-image2 {
-        background-image: url('{{ RBAC2 }}');
+        background-image: url('images/exam_availability_1.png');
         width: 90vw;
         max-width: 1000px;
         height: 50vh;
@@ -201,7 +201,7 @@
     }
     
     .availability-image {
-        background-image: url('{{ availability }}');
+        background-image: url('images/RBAC.png');
         width: 90vw;
         max-width: 1000px;
         height: 50vh;
@@ -280,7 +280,7 @@
     }
     
     .hero {
-        background-image: url('{{ background }}');
+        background-image: url('images/background.jpg');
         background-position: center;
         background-size: cover;
         height: 100vh;

@@ -46,12 +46,7 @@ def user_loader(user_id):
 
 @app.route("/", strict_slashes=False)
 def home():
-    easy_nav = "./static/images/easy.png"
-    RBAC = "./static/images/RBAC.png"
-    RBAC2 = "./static/images/exam_availability_1.png"
-    availability = "./static/images/RBAC.png"
-    background = "./static/background.jpg"
-    return render_template("index.html", easy_nav=easy_nav, RBAC=RBAC, RBAC2=RBAC2, availability=availability, background=background)
+    return render_template("index.html")
 
 @app.route("/Signup", methods = ['GET', 'POST'], strict_slashes=False)
 def add_user():
