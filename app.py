@@ -339,11 +339,12 @@ def view_students_results():
 @app.route("/dashboard/view-courses/exam-availability/<int:exam_id>", methods=['GET'], strict_slashes=False)
 def change_exam_availability(exam_id):
     exam = query_functions.get_exam(exam_id)
+    session = storage.get_session()
     if exam.IsAvailable:
         exam.IsAvailable = False
     else:
         exam.IsAvailable = True
-    session = storage.get_session()
+
     try:
         storage.save()
     except Exception as e:
