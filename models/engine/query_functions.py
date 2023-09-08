@@ -80,7 +80,7 @@ def get_student_courses(user_id):
 def get_exam(exam_id):
     session = storage.get_session()
     exam = session.query(Exam).filter_by(ExamID = exam_id).first()
-    session.close()
+    # session.close()
     return exam
 
 def get_hashed_password(Email):
