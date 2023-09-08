@@ -122,13 +122,13 @@ def user_submitted_exam(user_id, exam_id):
 def get_user_results(user_id):
     session = storage.get_session()
     results = session.query(Result).filter_by(UserID=user_id).all()
-    session.close()
+    # session.close()
     return results
 
 def get_exam_results(exam_id):
     session = storage.get_session()
     results = session.query(Result).filter_by(ExamID=exam_id).all()
-    session.close()
+    # session.close()
     return results
 
 def get_questions(exam_id):
