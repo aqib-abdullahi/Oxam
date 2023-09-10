@@ -108,7 +108,6 @@
             <hr>
             <tbody>
             {% for user in users %}
-<<<<<<< HEAD
                 <tr>
                     <td>{{ user.FirstName }}</td>
                     <td>{{ user.LastName }}</td>
@@ -116,13 +115,11 @@
                     <td><a href="/dashboard/view-courses/view-registered-students/unregister/{{ course.CourseID }}/{{ user.UserID }}" onclick="return confirm('Are you sure you want to unregister this student?')">Delete</a></td>
                 </tr>
             {% endfor %}
-=======
                 <td>{{ user.FirstName }}</td>
                 <td>{{ user.LastName }}</td>
                 <td>{{ user.Email }}</td>
                 <td><a href="/dashboard/view-courses/view-registered-students/unregister/{{ course.CourseID }}/{{ user.UserID }}">Delete</a></td>
             {% endfor %}<br>
->>>>>>> 71f82aa (registered students table modified)
             </tbody>
         </table>
         <div class="add">
